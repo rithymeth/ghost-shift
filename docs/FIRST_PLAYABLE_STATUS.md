@@ -1,6 +1,6 @@
 # First playable: what is proven, what is not
 
-**Windows build (2026-11-18):** the rules, server core and 11 test programs build with VS 2022 against an installed engine SDK. 10 of 11 pass; `ghostshift_contract_test` fails 4–6 checks because `GhostTools::extract_requested` reads non-zero on the server shortly after a player joins (the value is 0 right after the pawn is created, and the contract then retreats immediately). Cause not found; the same failure occurs without the trap change.
+**Windows build (2026-11-18):** the rules, server core and all 11 test programs build with VS 2022 against an installed engine SDK and pass after a clean rebuild. Trap: building the tree under `%TEMP%` defeats MSBuild's incremental tracking (warning MSB8029), so a header change left stale objects and made `contract_test` fail with a garbage `extract_requested`; build outside `%TEMP%` or use `--clean-first` after layout changes. The client and the scripted checks were not run.
 
 The design document's first-playable acceptance checklist (section 12), against the evidence in this repository.
 "Proven" means a test or a recorded run shows it, on **Linux, with a software renderer, on one machine**. Nothing here has run on
