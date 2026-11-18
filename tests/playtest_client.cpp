@@ -1,6 +1,7 @@
 // A scripted headless player for the assembled server: joins, walks, cleans the three stains of the Willow House scene by
 // position (clients only see replicated transforms, not tags), then extracts. Real time, real UDP.
-// usage: ghostshift_playtest <host:port> [name]      prints GHOSTSHIFT_PLAYTEST {json}; exit 0 when the contract finished and paid.
+// usage: ghostshift_playtest <host:port> [name] [--full]   prints GHOSTSHIFT_PLAYTEST {json}; exit 0 when the contract finished and paid.
+// --full also contains the ghost first (place the trap beside it, stun it, activate), so the contract completes instead of being a retreat.
 #include "aether/net/replication.h"
 #include "aether/server/dedicated_server.h"
 #include "gs/cleaning.h"
@@ -27,7 +28,9 @@ int main(int argc, char** argv) {
     const auto addr = net::Address::Parse(argv[1]);
     if (!addr) { std::fprintf(stderr, "bad address\n"); return 2; }
     NetClientConfig cc;
-    cc.server = *addr, cc.name = argc > 2 ? argv[2] : "Maya", cc.duration = 1e9, cc.send_rpc = false, cc.join_timeout = 15;
+    bool full = false;
+    for (int i = 2; i < argc; ++i) if (std::string(argv[i]) == "--full") full = true;
+    cc.server = *addr, cc.name = argc > 2 && std::string(argv[2]) != "--full" ? argv[2] : "Maya", cc.duration = 1e9, cc.send_rpc = false, cc.join_timeout = 15;
     NetClient client;
     std::string err;
     const auto t0 = Clock::now();
@@ -93,6 +96,22 @@ int main(int argc, char** argv) {
     };
     // A real client sends an input every frame, including "no movement" (the movement rule decelerates only when it is stepped).
     auto stand = [&](int frames) { for (int i = 0; i < frames; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); } };
+    // --full: contain the ghost first. The Prankster starts about 4.2 m from the spawn point: place the trap beside it (within 3 m of
+    // us), stun it (within 5 m of us), activate (the stunned ghost is inside the trap's 3 m radius).
+    i32 ghost_state = -1;
+    auto ghost_now = [&]() { i32 st = -1; w.ForEach<GhostBrain>([&](GhostBrain& g) { st = g.state; }); return st; };
+    if (full) {
+        GhostTools* gt = w.GetComponent<GhostTools>(pawn());
+        const reflect::TypeInfo& tt = reflect::Reflect<GhostTools>();
+        call(tt, "PlaceTrap", gt, {f32{-1.2f}, f32{-2.5f}});
+        for (int i = 0; i < 12; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
+        call(tt, "StunGhost", gt, {});
+        for (int i = 0; i < 12; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
+        say("ghost stunned?");
+        call(tt, "ActivateTrap", gt, {});
+        for (int i = 0; i < 20; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
+        say("trap activated");
+    }
     int cleaned = 0;
     for (int i = 0; i < 20; ++i) { client.Movement()->Predict(pawn(), 0.5f, -0.866f, false, 1.0f / 30.0f); frame(); }
     stand(30);
@@ -111,7 +130,8 @@ int main(int argc, char** argv) {
     ContractResult result;
     w.ForEach<ContractResult>([&](ContractResult& r) { result = r; });
     const GhostCleaner* gc = w.GetComponent<GhostCleaner>(pawn());
-    std::printf("GHOSTSHIFT_PLAYTEST {\"cleaned\":%d,\"state\":%d,\"grade\":%d,\"payout\":%d,\"cleaned_percent\":%d,\"accepted\":%d,\"rejected\":%d}\n",
-                cleaned, result.state, result.grade, result.payout, result.cleaned_percent, gc ? gc->accepted : -1, gc ? gc->rejected : -1);
+    ghost_state = ghost_now();
+    std::printf("GHOSTSHIFT_PLAYTEST {\"ghost_state\":%d,\"cleaned\":%d,\"state\":%d,\"grade\":%d,\"payout\":%d,\"cleaned_percent\":%d,\"accepted\":%d,\"rejected\":%d}\n",
+                ghost_state, cleaned, result.state, result.grade, result.payout, result.cleaned_percent, gc ? gc->accepted : -1, gc ? gc->rejected : -1);
     return result.state != 0 && result.payout > 0 ? 0 : 1;
 }

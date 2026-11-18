@@ -254,7 +254,9 @@ int main(int argc, char** argv) {
                             company.Data().contracts_completed, ok ? "" : " - READ-ONLY");
         }
         ghostshift::CleaningSystem cleaning_system;
-        ghostshift::HauntingSystem haunting_system;
+        ghostshift::HauntingConfig haunting_config;
+        if (const char* rise = std::getenv("GHOSTSHIFT_HAUNTING_RISE")) haunting_config.rise_per_second = static_cast<f32>(std::atof(rise)); // tuning/test override
+        ghostshift::HauntingSystem haunting_system(haunting_config);
         ghostshift::TrapSystem trap_system;
         ghostshift::CaretakerSystem caretaker_system;
         ghostshift::ContractSystem contract_system;

@@ -344,3 +344,31 @@ needs the trap sequence (place, bait, stun, activate) from a networked client, w
 here is the authored Prankster, so the Caretaker and the other types are not exercised in this run. The Windows player cannot
 join this server: it would need a custom client that carries the Ghost Shift components (the engine's player joins the
 engine's own server). Everything ran on one machine over loopback.
+
+# A full contract on the assembled server — completed, graded, paid, persisted
+
+`tools/assembled_check.sh` now plays two sessions against `ghostshift_server`, restarting it between them:
+
+| Session | What the scripted player does | Server result |
+|---|---|---|
+| 1 | cleans all three stains, extracts | `RETREAT: grade D, payout 400` (the ghost was never contained) |
+| 2 (server restarted) | places the trap beside the ghost, stuns it, activates, cleans all three stains, extracts | `Trap: ghost contained`, then `COMPLETED: grade S, payout 1500` |
+| 3 (started with nobody in it) | none | `company loaded (money 1900, 1 contract(s) completed)` |
+
+So the whole loop of the design doc's first-playable checklist now runs in one process: join, move, clean, contain, extract,
+results, currency awarded once, company saved and loaded across restarts. The completed contract is graded S because the run
+took seconds against a 900 s par, with no attacks. The final replicated ghost state the client saw was Contained (5).
+
+**Balance problem this run exposed (my placeholder rules, not a bug):** the ghost was contained while still Dormant, with no
+baiting. The Prankster starts about 4.2 m from the spawn point; a trap can be placed 3 m from the player, a stun reaches 5 m,
+the capture radius is 3 m, so any ghost within roughly 6 m of where a player stands can be trapped on the first seconds of a
+contract. The design doc's "baiting" is not required by these numbers, and a one-person S in seconds is not the intended 15 to
+25 minute contract. This needs tuning in playtests or a rule change (for example: a Dormant ghost cannot be stunned, the trap
+needs time to arm, or the stun needs line of sight). I left the rules as they are rather than choose a design for you.
+
+`GHOSTSHIFT_HAUNTING_RISE` (environment variable) overrides the haunting's rise per second on the server, for tuning and tests;
+the check does not use it.
+
+Still not covered: two or more players coordinating the sequence, the ghost fighting back during the sequence (it was Dormant),
+the Caretaker and other types in the assembled server, a custom first-person client that can join this server, and anything
+across two machines or on Windows.
