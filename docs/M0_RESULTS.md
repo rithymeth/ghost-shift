@@ -310,3 +310,37 @@ The systems are tested in isolation (no network); the Caretaker has not been run
 inside test programs. There is no `ghostshift_server` executable yet that loads the cooked scene and runs them together, and
 the scene's authored ghost is the Luau patrol, not a `GhostBrain`. Building that server, and deciding how scene entities
 map to the replicated ghost, director and contamination archetypes, is the next structural step.
+
+# The assembled server (`ghostshift_server`) — the C++ systems now run together
+
+Until now the C++ systems (cleaning, trap, haunting, Caretaker, contract) ran only inside test programs. `ghostshift_server`
+(`server/main.cpp`, a modified copy of the engine's `aether_server`) now loads the cooked game headless, maps the scene onto
+the replicated entities (`src/gs/scene_setup.cpp`: tag `Ghost` becomes the replicated ghost with a `GhostBrain`, optional tag
+`GhostType:<Name>`; tag `Director` becomes the replicated director with `Haunting` and `ContractResult`), hands those entities'
+logic to C++ (their offline Luau scripts and the template player's controller are removed on the server), loads the company from
+`$GHOSTSHIFT_SAVE_DIR` (default `./company`) and runs every system each tick, in the order the tests use.
+
+`tools/assembled_check.sh <ghost-shift build dir> <engine build dir>`: cook, host the real `Main` scene, let a scripted
+real-time player (`ghostshift_playtest`: joins, walks, cleans three stains by position, extracts) play over real UDP, restart
+the server, play again, start it a third time with nobody in it:
+
+| Check | Result |
+|---|---|
+| Scene mapped: 1 ghost, 1 director, 3 contamination, 3 scripts handed to C++ | passed |
+| The player walks, cleans all three stains (45 accepted requests, 0 rejected), extracts | passed; the server logs `RETREAT: grade D, payout 400 (paid)` |
+| The result replicates to the client | passed |
+| After a server restart the company is loaded (money 400) and the next session pays again | passed |
+| A third start with nobody in it holds both payouts (800) | passed |
+
+`ghostshift_scene_setup_test` (8 checks, two mutations caught) covers the mapping itself.
+
+Two script bugs found on the way, both mine, both informative: (1) the player first walked next to the ectoplasm and then
+tried a stain 4.9 m away; the server rejected every request, which is the range rule working in the assembled server;
+(2) a client that sends no input while standing still leaves the server pawn's velocity unchanged, so reversing direction cost
+about a metre. A real client sends an input every frame, including "no movement", and the playtest now does.
+
+It is a **retreat, not a completion**: the ghost is never contained in this run. Completing a contract in the assembled server
+needs the trap sequence (place, bait, stun, activate) from a networked client, which no scripted player does yet. The ghost
+here is the authored Prankster, so the Caretaker and the other types are not exercised in this run. The Windows player cannot
+join this server: it would need a custom client that carries the Ghost Shift components (the engine's player joins the
+engine's own server). Everything ran on one machine over loopback.
