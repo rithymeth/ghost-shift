@@ -217,3 +217,31 @@ What the first renders showed, and what changed:
 Still weak (blockout stage): the ghost is a pile of spheres, the vacuum is hard to read, the floor is dark, the moon patch is
 modest, and there are no textures, props or detail. Raising the moon's intensity from 1.2 to 4.0 barely changed the patch,
 which I did not investigate. These renders are on a software renderer; the Windows GPU render may differ.
+
+# Contract results, payout and the company save — results
+
+From the design doc: grades D to S, retreat for partial rewards, payout = base x difficulty (+ bonuses - penalties),
+"contract results award currency once", "company save survives restarting", "disconnects do not corrupt progress".
+**All numbers are placeholders** (`ContractConfig`); property damage is not modelled, so the penalty is always 0.
+
+Rules: score = 40 x cleaned + 30 x ghost contained + 20 x safety (4 incapacitations = 0) + 10 x pace (par 900 s), grade
+S >= 95, A >= 85, B >= 70, C >= 55, else D. Payout for a completed contract = 1000 x grade multiplier (D 0.5 .. S 1.5);
+a retreat (extracting before everything is cleaned and the ghost contained) is graded D and pays 40% of the base scaled
+by how much was cleaned. The company (money, level, reputation, contracts, best grade) is saved with the engine's save
+system: atomic write, CRC, previous file kept as `.bak`.
+
+`ghostshift_contract_test`, 27 checks, all passing: grading boundaries and payouts; a missing save starts a new company;
+a paid contract survives a restart; replaying a paid contract id pays nothing; a damaged save is recovered from the
+backup and says so (the last contract's pay is lost, not everything); with nothing readable the company becomes
+read-only, refuses to be paid into and **leaves the damaged files untouched**; two end-to-end runs with two real clients
+(a full completion graded S for 1500, and a retreat graded D for 200); both players pressing Extract, and pressing it
+again later, pays exactly once; clients see the result (replicated).
+
+Mutation checks, each caught: replayed contracts pay again, a retreat pays like a completion, an unreadable save stays
+writable (would overwrite it).
+
+Not built or tested: the pay screen and any UI, level-up unlocks and the upgrade bench, per-player progression and its
+validation (the company is the host's), property damage and the penalty, bonus objectives, difficulty selection, a
+future-version save file (the engine refuses it; not exercised here), and a crash in the middle of a save (the engine
+tests the atomic write; this game's use of it was not killed mid-write). A recovery from the backup loses the most
+recent contract's pay, by design of the backup.

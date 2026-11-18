@@ -24,10 +24,12 @@ struct GhostTools {
     Request inbox[kInbox] = {};                          // server side only
     i32 inbox_n = 0;
     f64 stun_ready = -1.0e9;                             // server side only
+    bool extract_requested = false;                      // server side only: set by Extract, read by ContractSystem
     void Push(Request r) { if (inbox_n < kInbox) inbox[inbox_n++] = r; else ++failed; }
     void PlaceTrap(f32 x, f32 z) { Push({kPlace, x, z}); } // Fn_Server
     void StunGhost() { Push({kStun, 0, 0}); }              // Fn_Server
     void ActivateTrap() { Push({kActivate, 0, 0}); }       // Fn_Server
+    void Extract() { extract_requested = true; }           // Fn_Server: leave the property (full result if ready, a retreat otherwise)
 };
 
 // On the trap entity (archetype "trap", tag "Trap").
@@ -61,7 +63,8 @@ AETHER_REFLECT(ghostshift::GhostTools, 1,
     AETHER_FIELD(failed, Field_Replicated),
     AETHER_METHOD(PlaceTrap, Fn_Server, {"x", "z"}),
     AETHER_METHOD(StunGhost, Fn_Server),
-    AETHER_METHOD(ActivateTrap, Fn_Server)
+    AETHER_METHOD(ActivateTrap, Fn_Server),
+    AETHER_METHOD(Extract, Fn_Server)
 )
 AETHER_REFLECT(ghostshift::GhostTrap, 1,
     AETHER_FIELD(armed, Field_Replicated)
