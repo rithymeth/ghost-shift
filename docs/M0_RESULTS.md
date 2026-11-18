@@ -89,3 +89,26 @@ budget: it may spend at most the real time that has passed, plus a 0.25 s burst.
 Limits: loopback, one client, no packet loss or latency simulated, so reconciliation under bad networks is untested
 (GDD target: usable at 100-150 ms RTT). Jumping, collision with walls and the 3D first-person camera are not wired
 in the networked path; the pawn walks on a flat plane. A second client and disconnect/reconnect are untested.
+
+# Bad networks and two clients — results
+
+`ghostshift_netcond_test`: two clients, each behind an in-process UDP relay (`tests/netem_relay.h`) that adds 60 ms
+one-way latency, up to 20 ms jitter (so packets reorder) and 5% loss in both directions: roughly 120-160 ms RTT, the
+GDD's stated usable range. Real UDP sockets, simulated time. `tc netem` was not available in the build container.
+
+| Check | Result |
+|---|---|
+| Both clients join and see their own pawn over the lossy link | passed |
+| Prediction under loss: Maya walks out and back; predicted and server positions agree within 5 cm after settling | passed (0 corrections, 60 inputs, 42 acks) |
+| The relays really dropped packets (37 of 625 and 35 of 600) | passed |
+| Two clients clean the same targets at once; the contract completes once | passed |
+| Work is conserved: exactly 45 accepted requests for 3 targets x 15 (no double credit, none lost) | passed |
+| Mutation check: changing the work per request makes the conservation check fail | confirmed |
+
+Reading it honestly: zero corrections is expected here. The movement step is deterministic and the server runs every
+input it receives (each packet repeats the last 8), so a loss rate this low only delays acks. Corrections would appear
+if the server and client disagreed about the world (collision, a moving platform, pushes), and none of that exists in
+the networked path yet. The 100-150 ms target is checked for movement and cleaning, not for a full 4-player session.
+
+Still untested: a disconnect or timeout in the middle of a clean, reconnect, loss above 5%, four clients, and any real
+network (two machines, NAT). The relay is test code; it is not a substitute for a real internet run.
