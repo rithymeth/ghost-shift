@@ -3,6 +3,7 @@
 // Resync with upstream when the engine is upgraded.
 #include "aether/server/dedicated_server.h"
 #include "gs/cleaning.h"
+#include "gs/haunting.h"
 
 #include "aether/core/log.h"
 #include "aether/ecs/remote_call.h"
@@ -29,6 +30,8 @@ using namespace aether::net;
 void RegisterServerComponents() {
     (void)GetComponentId<ServerPlayer>();
     (void)GetComponentId<net::NetMovement>();
+    (void)GetComponentId<ghostshift::Haunting>();
+    (void)GetComponentId<ghostshift::GhostBrain>();
     (void)GetComponentId<ghostshift::GhostCleaner>(); // Ghost Shift: the pawn's clean request RPC
     (void)GetComponentId<NetIdentity>();
     (void)GetComponentId<Transform>();
@@ -396,6 +399,9 @@ bool NetClient::Start(const NetClientConfig& config, f64 now, std::string* error
     });
     rpc_ = std::make_unique<RpcRouter>(*world_ref_, *host_, *replication_, server);
     movement_ = std::make_unique<MovementClient>(*world_ref_, *host_, *replication_, server);
+    // Ghost Shift: the haunting director and ghosts are server-owned entities whose state replicates to every client.
+    replication_->OnSpawn("director", [](World& w, Entity e, const NetIdentity&) { w.AddComponent(e, ghostshift::Haunting{}); });
+    replication_->OnSpawn("ghost", [](World& w, Entity e, const NetIdentity&) { w.AddComponent(e, ghostshift::GhostBrain{}); });
     start_ = now;
     return true;
 }
