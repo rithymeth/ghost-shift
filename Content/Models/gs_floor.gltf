@@ -1,0 +1,120 @@
+{
+ "asset": {
+  "version": "2.0",
+  "generator": "ghost-shift lookdev blockout"
+ },
+ "buffers": [
+  {
+   "uri": "data:application/octet-stream;base64,AAAAQM3MTL4AAABAAAAAQM3MTL4AAADAAAAAQAAAAAAAAADAAAAAQAAAAAAAAABAAAAAwM3MTL4AAADAAAAAwM3MTL4AAABAAAAAwAAAAAAAAABAAAAAwAAAAAAAAADAAAAAwAAAAAAAAABAAAAAQAAAAAAAAABAAAAAQAAAAAAAAADAAAAAwAAAAAAAAADAAAAAwM3MTL4AAADAAAAAQM3MTL4AAADAAAAAQM3MTL4AAABAAAAAwM3MTL4AAABAAAAAwM3MTL4AAABAAAAAQM3MTL4AAABAAAAAQAAAAAAAAABAAAAAwAAAAAAAAABAAAAAQM3MTL4AAADAAAAAwM3MTL4AAADAAAAAwAAAAAAAAADAAAAAQAAAAAAAAADAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAEAAAACAAAAAAAAAAIAAAADAAAABAAAAAUAAAAGAAAABAAAAAYAAAAHAAAACAAAAAkAAAAKAAAACAAAAAoAAAALAAAADAAAAA0AAAAOAAAADAAAAA4AAAAPAAAAEAAAABEAAAASAAAAEAAAABIAAAATAAAAFAAAABUAAAAWAAAAFAAAABYAAAAXAAAA",
+   "byteLength": 912
+  }
+ ],
+ "bufferViews": [
+  {
+   "buffer": 0,
+   "byteOffset": 0,
+   "byteLength": 288,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 288,
+   "byteLength": 288,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 576,
+   "byteLength": 192,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 768,
+   "byteLength": 144,
+   "target": 34963
+  }
+ ],
+ "accessors": [
+  {
+   "bufferView": 0,
+   "componentType": 5126,
+   "count": 24,
+   "type": "VEC3",
+   "min": [
+    -2.0,
+    -0.2,
+    -2.0
+   ],
+   "max": [
+    2.0,
+    0.0,
+    2.0
+   ]
+  },
+  {
+   "bufferView": 1,
+   "componentType": 5126,
+   "count": 24,
+   "type": "VEC3"
+  },
+  {
+   "bufferView": 2,
+   "componentType": 5126,
+   "count": 24,
+   "type": "VEC2"
+  },
+  {
+   "bufferView": 3,
+   "componentType": 5125,
+   "count": 36,
+   "type": "SCALAR"
+  }
+ ],
+ "materials": [
+  {
+   "name": "DarkWood",
+   "pbrMetallicRoughness": {
+    "baseColorFactor": [
+     0.17,
+     0.09,
+     0.05,
+     1.0
+    ],
+    "metallicFactor": 0.0,
+    "roughnessFactor": 0.55
+   }
+  }
+ ],
+ "meshes": [
+  {
+   "name": "gs_floor",
+   "primitives": [
+    {
+     "attributes": {
+      "POSITION": 0,
+      "NORMAL": 1,
+      "TEXCOORD_0": 2
+     },
+     "indices": 3,
+     "material": 0,
+     "mode": 4
+    }
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "name": "gs_floor",
+   "mesh": 0
+  }
+ ],
+ "scenes": [
+  {
+   "nodes": [
+    0
+   ]
+  }
+ ],
+ "scene": 0
+}
