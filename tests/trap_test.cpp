@@ -60,8 +60,12 @@ int main() {
         tools->ActivateTrap(); tick();
         CHECK(brain->state == static_cast<i32>(GhostState::Hunting) && tools->captures == 0, "activating the trap on a ghost that is not stunned fails (it resists)");
 
+        brain->state = static_cast<i32>(GhostState::Dormant);
         tools->StunGhost(); tick();
-        CHECK(brain->state == static_cast<i32>(GhostState::Stunned) && tools->stuns == 1, "stunning a ghost within range works");
+        CHECK(brain->state == static_cast<i32>(GhostState::Dormant) && tools->stuns == 0, "a Dormant ghost cannot be stunned: it has to be woken and baited first");
+        brain->state = static_cast<i32>(GhostState::Hunting);
+        tools->StunGhost(); tick();
+        CHECK(brain->state == static_cast<i32>(GhostState::Stunned) && tools->stuns == 1, "stunning an awake ghost within range works");
         tools->StunGhost(); tick();
         CHECK(tools->stuns == 1, "a second stun inside the cooldown is rejected");
 

@@ -37,7 +37,8 @@ void TrapSystem::Update(World& world, f64 now, HauntingSystem& haunting) {
                     }
                 } else if (r.kind == GhostTools::kStun) {
                     if (ghost && now >= tools.stun_ready && Dist2(ghost_pos->position, pawn.position) <= config_.stun_range * config_.stun_range &&
-                        ghost->state != static_cast<i32>(GhostState::Contained) && haunting.Stun(world, now)) {
+                        ghost->state != static_cast<i32>(GhostState::Contained) &&
+                        !(config_.stun_needs_awake && ghost->state == static_cast<i32>(GhostState::Dormant)) && haunting.Stun(world, now)) {
                         tools.stun_ready = now + config_.stun_cooldown;
                         ++tools.stuns;
                         ok = true;

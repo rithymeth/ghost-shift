@@ -372,3 +372,20 @@ the check does not use it.
 Still not covered: two or more players coordinating the sequence, the ghost fighting back during the sequence (it was Dormant),
 the Caretaker and other types in the assembled server, a custom first-person client that can join this server, and anything
 across two machines or on Windows.
+
+# Trap balance fix: baiting is now required
+
+The previous section found that a Dormant ghost could be trapped in the first seconds. Smallest change, a config switch
+(`TrapConfig::stun_needs_awake`, on by default): **a Dormant ghost cannot be stunned.** The team has to let the haunting wake
+the ghost and bait it to the trap. This is my choice among the options I listed (not stunning a Dormant ghost, a trap that
+needs time to arm, line of sight); it is a placeholder, easy to reverse, and the design is yours.
+
+Tests: `ghostshift_trap_test` has a new check (a Dormant ghost cannot be stunned; an awake one can); removing the rule fails 7
+checks. `tools/assembled_check.sh` now waits, standing by the trap, until the replicated ghost state shows it awake, and runs
+the server with `GHOSTSHIFT_HAUNTING_RISE=2` so that takes about 9 s instead of about 25 s. Result: the ghost woke after
+8.7 s, was stunned and contained, and the contract completed `grade S, payout 1500`; the company held 1900 after a restart.
+
+**Still not a 15 to 25 minute contract.** Even with baiting, the run is an S in roughly 25 s: the scene has only three stains,
+so there is little to clean, and the grade's pace term (par 900 s) never bites. Pacing is a content problem (more
+contamination, locked rooms, more tasks) and a tuning problem (the haunting's rise, the grade thresholds), not something this
+rule fixes. Nothing here has been played by a person, so none of these numbers has been felt yet.

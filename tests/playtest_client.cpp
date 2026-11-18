@@ -104,7 +104,11 @@ int main(int argc, char** argv) {
         GhostTools* gt = w.GetComponent<GhostTools>(pawn());
         const reflect::TypeInfo& tt = reflect::Reflect<GhostTools>();
         call(tt, "PlaceTrap", gt, {f32{-1.2f}, f32{-2.5f}});
-        for (int i = 0; i < 12; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
+        // Bait: a Dormant ghost cannot be stunned. Wait (standing by the trap) until the haunting wakes it and it comes to us.
+        const f64 waiting_since = seconds();
+        for (int i = 0; i < 30 * 60 && ghost_now() < 1 && seconds() - waiting_since < 60.0; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
+        std::fprintf(stderr, "[%.1fs] the ghost woke after %.1f s (state %d)\n", seconds(), seconds() - waiting_since, ghost_now());
+        for (int i = 0; i < 45; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); } // let it settle beside the trap
         call(tt, "StunGhost", gt, {});
         for (int i = 0; i < 12; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
         say("ghost stunned?");

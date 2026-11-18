@@ -42,6 +42,7 @@ struct TrapConfig {
     f32 stun_range = 5.0f;      // a player can stun a ghost this far away
     f64 stun_cooldown = 20.0;
     f32 capture_radius = 3.0f;  // a stunned ghost this close to the trap can be captured
+    bool stun_needs_awake = true; // a Dormant ghost is not engaged and cannot be stunned: the team has to let the haunting wake it and bait it
 };
 
 class TrapSystem {
