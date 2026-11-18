@@ -264,6 +264,8 @@ int main(int argc, char** argv) {
         }
         ghostshift::CleaningSystem cleaning_system;
         ghostshift::HauntingConfig haunting_config;
+        for (const Entity e : FindEntitiesWithTag(game.GetWorld(), "SpawnPoint")) // the ghost patrols between the spawn points until it has someone to chase
+            if (const Transform* t = game.GetWorld().GetComponent<Transform>(e)) haunting_config.patrol.push_back(t->position);
         if (const char* rise = std::getenv("GHOSTSHIFT_HAUNTING_RISE")) haunting_config.rise_per_second = static_cast<f32>(std::atof(rise)); // tuning/test override
         ghostshift::HauntingSystem haunting_system(haunting_config);
         ghostshift::TrapSystem trap_system;

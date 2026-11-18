@@ -83,7 +83,20 @@ void HauntingSystem::Update(World& world, f64 now, u32 cleaned_total) {
             ++g.pranks; // a prank event (item theft and swaps come with the tools)
             g.next_prank = now + config_.prank_interval;
         }
-        if (!target || (s != GhostState::Investigating && s != GhostState::Hunting)) return;
+        const bool chasing = target && (s == GhostState::Investigating || s == GhostState::Hunting);
+        if (!chasing) { // nobody to chase (or the ghost is only pranking / dormant): walk the patrol route
+            if (!config_.patrol.empty()) {
+                const Vec3& wp = config_.patrol[static_cast<usize>(g.waypoint) % config_.patrol.size()];
+                const f32 dx = wp.x - t.position.x, dz = wp.z - t.position.z, d = std::sqrt(dx * dx + dz * dz);
+                if (d < 0.3f) g.waypoint = static_cast<i32>((static_cast<usize>(g.waypoint) + 1) % config_.patrol.size());
+                else {
+                    const f32 step = std::min(config_.patrol_speed * static_cast<f32>(dt), d);
+                    t.position.x += dx / d * step;
+                    t.position.z += dz / d * step;
+                }
+            }
+            return;
+        }
         const f32 dist = std::sqrt(best);
         const f32 speed = s == GhostState::Hunting ? config_.hunt_speed : config_.stalk_speed;
         const bool close_enough = s == GhostState::Investigating && dist <= config_.stalk_distance;

@@ -37,6 +37,22 @@ struct Player {
     }
 };
 
+static void PatrolTest() {
+    World w;
+    net::NetIdentity gid;
+    GhostBrain brain; // Dormant: nobody to chase
+    const Entity ghost = w.CreateEntity(gid, Transform{Vec3{0, 0, 0}, Quaternion{}}, brain);
+    HauntingConfig cfg;
+    cfg.patrol = {Vec3{4, 0, 0}, Vec3{4, 0, 4}};
+    HauntingSystem h(cfg);
+    f64 now = 0;
+    float max_x = 0, max_z = 0;
+    for (int i = 0; i < 30 * 12; ++i) { now += 1.0 / 30.0; h.Update(w, now, 0); const Vec3 p = w.GetComponent<Transform>(ghost)->position; max_x = std::max(max_x, p.x); max_z = std::max(max_z, p.z); }
+    const bool ok = max_x > 3.5f && max_z > 3.5f;
+    std::printf("%s patrol: a ghost with nobody to chase walks its route (reached x=%.1f z=%.1f)\n", ok ? "ok:  " : "FAIL:", max_x, max_z);
+    if (!ok) ++g_failed;
+}
+
 int main() {
     RegisterServerComponents();
     World world;
@@ -191,6 +207,7 @@ int main() {
         CHECK(w3.GetComponent<GhostBrain>(g3)->attacks >= 2, "once the protection window ends the ghost can attack again");
     }
 
+    PatrolTest();
     std::printf("%s (%d failed)\n", g_failed ? "FAILED" : "PASSED", g_failed);
     return g_failed ? 1 : 0;
 }
