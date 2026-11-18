@@ -1827,6 +1827,12 @@
             1,
             1
           ]
+        },
+        "WidgetComponent": {
+          "$v": 1,
+          "layout": "UI/Hud.aui",
+          "visible": true,
+          "z": 0
         }
       },
       "guid": "f4fb0d10-586d-5414-8c9c-c0ef95af0093"

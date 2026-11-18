@@ -120,6 +120,7 @@ def main(project):
         out = dict(scene)
         director = {"guid": gid("entity:director"), "components": {
             "Transform": tf((0, 0, 0)), "Tags": {"$v": 1, "names": ["Director"]},
+            "WidgetComponent": {"$v": 1, "layout": "UI/Hud.aui", "z": 0, "visible": True},
             "ScriptComponent": {"$v": 1, "script": gid("script:Contract"),
                                 "properties": [{"name": "autoclean", "value": "true"}] if autoclean else []}}}
         out["entities"] = ents + [director]
@@ -160,6 +161,7 @@ def main(project):
         out["entities"] = [json.loads(json.dumps(e)) for e in ents]
         out["entities"].append({"guid": gid("entity:director"), "components": {
             "Transform": tf((0, 0, 0)), "Tags": {"$v": 1, "names": ["Director"]},
+            "WidgetComponent": {"$v": 1, "layout": "UI/Hud.aui", "z": 0, "visible": True},
             "ScriptComponent": {"$v": 1, "script": gid("script:Contract"), "properties": []}}})
         for e in out["entities"]:
             if "Player" in e["components"].get("Tags", {}).get("names", []):

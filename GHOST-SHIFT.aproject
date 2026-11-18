@@ -3,7 +3,9 @@
   "$v": 1,
   "always_cook": [
     "Input/",
-    "Scenes/"
+    "Scenes/",
+    "UI/",
+    "fonts/"
   ],
   "collision_matrix": [],
   "default_quality": "High",

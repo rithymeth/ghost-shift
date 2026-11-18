@@ -1,0 +1,220 @@
+{
+ "$type": "Layout",
+ "version": 1,
+ "root": {
+  "type": "Canvas",
+  "name": "Hud",
+  "children": [
+   {
+    "type": "Border",
+    "name": "ContractPanel",
+    "background": {
+     "kind": "Color",
+     "tint": [
+      0.02,
+      0.04,
+      0.09,
+      0.72
+     ]
+    },
+    "padding": [
+     22,
+     14,
+     22,
+     16
+    ],
+    "slot": {
+     "anchors": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "position": [
+      28,
+      28
+     ],
+     "size": [
+      440,
+      150
+     ]
+    },
+    "children": [
+     {
+      "type": "VerticalBox",
+      "children": [
+       {
+        "type": "Text",
+        "name": "Title",
+        "text": "WILLOW HOUSE",
+        "size": 26,
+        "color": [
+         0.85,
+         0.9,
+         1.0,
+         0.85
+        ]
+       },
+       {
+        "type": "Spacer",
+        "size": [
+         8,
+         6
+        ]
+       },
+       {
+        "type": "Text",
+        "name": "ContamText",
+        "text": "CONTAMINATION  0 / 0",
+        "size": 34,
+        "color": [
+         1.0,
+         0.82,
+         0.25,
+         1.0
+        ]
+       },
+       {
+        "type": "Spacer",
+        "size": [
+         8,
+         8
+        ]
+       },
+       {
+        "type": "ProgressBar",
+        "name": "CleanBar",
+        "percent": 0.0,
+        "background": {
+         "kind": "Color",
+         "tint": [
+          0.13,
+          0.15,
+          0.2,
+          1.0
+         ]
+        },
+        "bar": {
+         "kind": "Color",
+         "tint": [
+          0.3,
+          1.0,
+          0.55,
+          1.0
+         ]
+        },
+        "slot": {
+         "size": [
+          396,
+          14
+         ]
+        }
+       },
+       {
+        "type": "Spacer",
+        "size": [
+         8,
+         8
+        ]
+       },
+       {
+        "type": "Text",
+        "name": "TimerText",
+        "text": "TIME  00:00",
+        "size": 26,
+        "color": [
+         1,
+         1,
+         1,
+         1
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "type": "Text",
+    "name": "Prompt",
+    "text": "",
+    "size": 30,
+    "color": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "justify": "Center",
+    "slot": {
+     "anchors": [
+      0.5,
+      0.82,
+      0.5,
+      0.82
+     ],
+     "alignment": [
+      0.5,
+      0.5
+     ],
+     "auto_size": true
+    }
+   },
+   {
+    "type": "Text",
+    "name": "Message",
+    "text": "",
+    "size": 64,
+    "color": [
+     0.3,
+     1.0,
+     0.55,
+     1.0
+    ],
+    "justify": "Center",
+    "slot": {
+     "anchors": [
+      0.5,
+      0.3,
+      0.5,
+      0.3
+     ],
+     "alignment": [
+      0.5,
+      0.5
+     ],
+     "auto_size": true
+    }
+   },
+   {
+    "type": "Text",
+    "name": "Hint",
+    "text": "WASD  MOVE     MOUSE  LOOK     HOLD LEFT MOUSE  CLEAN",
+    "size": 24,
+    "color": [
+     0.85,
+     0.9,
+     1.0,
+     0.85
+    ],
+    "justify": "Center",
+    "slot": {
+     "anchors": [
+      0.5,
+      1,
+      0.5,
+      1
+     ],
+     "alignment": [
+      0.5,
+      1
+     ],
+     "position": [
+      0,
+      -22
+     ],
+     "auto_size": true
+    }
+   }
+  ]
+ }
+}

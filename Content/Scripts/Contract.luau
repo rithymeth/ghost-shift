@@ -76,9 +76,19 @@ function Contract:Target()
     return best
 end
 
+function Contract:UpdateHud(prompt)
+    local cleaned = self.total - #self.items
+    UI.SetText("ContamText", string.format("CONTAMINATION  %d / %d", cleaned, self.total))
+    UI.SetValue("CleanBar", self.total > 0 and cleaned / self.total or 1)
+    UI.SetText("TimerText", string.format("TIME  %02d:%02d", math.floor(self.elapsed / 60), math.floor(self.elapsed % 60)))
+    UI.SetText("Prompt", prompt or "")
+end
+
 function Contract:OnUpdate(dt)
     if self.done then return end
     self.elapsed += dt
+    local aimed = not self.autoclean and self:Target() ~= nil
+    self:UpdateHud(aimed and "HOLD LEFT MOUSE TO CLEAN" or nil)
     if not (self.autoclean or Input.IsTriggered("Clean")) then return end
     local item = self:Target()
     if item == nil then return end
@@ -97,6 +107,8 @@ function Contract:OnUpdate(dt)
         if #self.items == 0 then
             self.done = true
             print(string.format("[Contract] COMPLETE: %d/%d cleaned in %.1fs", self.total, self.total, self.elapsed))
+            self:UpdateHud(nil)
+            UI.SetText("Message", "CONTRACT COMPLETE")
         end
     end
 end
