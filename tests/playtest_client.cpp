@@ -28,9 +28,13 @@ int main(int argc, char** argv) {
     const auto addr = net::Address::Parse(argv[1]);
     if (!addr) { std::fprintf(stderr, "bad address\n"); return 2; }
     NetClientConfig cc;
-    bool full = false;
-    for (int i = 2; i < argc; ++i) if (std::string(argv[i]) == "--full") full = true;
-    cc.server = *addr, cc.name = argc > 2 && std::string(argv[2]) != "--full" ? argv[2] : "Maya", cc.duration = 1e9, cc.send_rpc = false, cc.join_timeout = 15;
+    bool full = false, duo = false, partner = false; // --duo: a second client (--partner) is in the room, so this one stuns and the partner activates
+    for (int i = 2; i < argc; ++i) {
+        if (std::string(argv[i]) == "--full") full = true;
+        if (std::string(argv[i]) == "--duo") duo = true;
+        if (std::string(argv[i]) == "--partner") partner = true;
+    }
+    cc.server = *addr, cc.name = argc > 2 && argv[2][0] != '-' ? argv[2] : "Maya", cc.duration = 1e9, cc.send_rpc = false, cc.join_timeout = 15;
     NetClient client;
     std::string err;
     const auto t0 = Clock::now();
@@ -129,6 +133,19 @@ int main(int argc, char** argv) {
     // (within 5 m of us); activate (the stunned ghost is inside the trap's 3 m radius).
     i32 ghost_state = -1;
     auto ghost_now = [&]() { i32 st = -1; w.ForEach<GhostBrain>([&](GhostBrain& g) { st = g.state; }); return st; };
+    if (partner) { // the teammate: stand by the trap and close it once the other player has stunned the ghost
+        GhostTools* pt = w.GetComponent<GhostTools>(pawn());
+        walk_to({-0.9f, 0, -1.0f}, 0.6f);
+        const f64 start = seconds();
+        while (seconds() - start < 150.0 && ghost_now() != static_cast<i32>(GhostState::Contained)) {
+            call(reflect::Reflect<GhostTools>(), "ActivateTrap", pt, {});
+            stand(30);
+        }
+        const bool contained = ghost_now() == static_cast<i32>(GhostState::Contained);
+        std::fprintf(stderr, "[%.1fs] partner: ghost %s\n", seconds(), contained ? "contained" : "NOT contained");
+        std::printf("GHOSTSHIFT_PARTNER {\"contained\":%d,\"captures\":%d}\n", contained ? 1 : 0, pt ? pt->captures : -1);
+        return contained ? 0 : 1;
+    }
     if (full) {
         GhostTools* gt = w.GetComponent<GhostTools>(pawn());
         const reflect::TypeInfo& tt = reflect::Reflect<GhostTools>();
@@ -141,8 +158,12 @@ int main(int argc, char** argv) {
         call(tt, "StunGhost", gt, {});
         stand(12);
         say("ghost stunned?");
-        call(tt, "ActivateTrap", gt, {});
-        stand(20);
+        if (duo) { // the partner has to close the trap: the stunner's own activation is refused while two players are up
+            for (int i = 0; i < 30 * 60 && ghost_now() != static_cast<i32>(GhostState::Contained); ++i) stand(1);
+        } else {
+            call(tt, "ActivateTrap", gt, {});
+            stand(20);
+        }
         say("trap activated");
     }
 
