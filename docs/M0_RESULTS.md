@@ -457,3 +457,16 @@ which the code took for "uninitialised" and refilled: an infinite battery. The t
 Not built or tested: any HUD for the tool, tank, battery or canister; the battery draining while a tool is merely held; the UV scrubber
 "revealing" hidden markings (stains are always visible here); collateral damage from the sprayer; a person choosing tools. The offline
 Luau game ignores tool kinds. Pacing is still about a minute for a scripted player, not the 12 to 18 minutes of the design doc.
+
+# First-person client — work in progress (NOT compiled or run yet)
+
+`client/main.cpp` is a first draft of `ghostshift_client`, a first-person client for `ghostshift_server`, written against the
+Aether SDK (the structure of the render loop follows the engine's `aether_player`). **It has not been compiled, linked or run, and is
+not in `CMakeLists.txt`.** It needs an SDK installed from an engine build with the window and Vulkan backends; the one used for the
+tests so far was installed without them. Design: the cooked scene is loaded locally for what you see, every rule and position comes
+from the server (a stain the server removes disappears on the client, the ghost and trap follow the server, other players get a proxy
+pawn), and input goes out as the same RPCs the tests use (WASD predicted movement, hold left mouse to clean, 1/2/3 tool, F van,
+T trap, Q stun, R activate, X extract). The HUD is driven from replicated state.
+
+Also added: blockouts for the trap (`gs_trap`) and for another player's pawn (`gs_pawn`), and hidden proxy entities for them in the
+scene, parked 100 m below the floor until the client moves them into place. The offline check (`tools/m1_headless.sh`) still passes.

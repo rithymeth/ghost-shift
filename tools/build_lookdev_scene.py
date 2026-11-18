@@ -107,6 +107,10 @@ def main(project):
     for name, pos in [("dust_a", (-1.5, 0, 2.0)), ("dust_b", (1.0, 0, 3.8)), ("dust_c", (4.8, 0, 1.6))]:
         model(name, "gs_dust", pos, tags=("Lookdev", "Contamination", "Kind:Dust"))
     model("van", "gs_van", (-3.5, 0, 4.7), tags=("Lookdev", "Van"))
+    # Presentation proxies for the networked client: parked far below the floor until the server says a trap or another player exists.
+    model("proxy_trap", "gs_trap", (0, -100, 0), tags=("Proxy", "ProxyTrap"))
+    for i in range(3):
+        model("proxy_pawn_%d" % i, "gs_pawn", (0, -100, 0), tags=("Proxy", "ProxyPawn"))
     # Lights. Moon: a cool directional light shining in through the window (-Z side, pointing +Z and down).
     moon_rot = qmul(quat("y", 180), quat("x", -40))
     add("moon", {"Transform": tf((0, 5, -8), moon_rot), "Tags": {"$v": 1, "names": ["Lookdev", "Light"]},

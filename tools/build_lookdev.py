@@ -162,6 +162,12 @@ def main(out):
     # Haunted dust: a few flat grey-brown drifts (matte, no glow: it is cleaned with the sprayer).
     dust = mat("HauntedDust", (0.62, 0.57, 0.5), 0.0, 1.0, (0.35, 0.42, 0.55), 0.9)
     W("gs_dust", [(cylinder(0.5, 0.03, 0, 0.015, 0), dust), (cylinder(0.3, 0.05, 0.35, 0.025, 0.2), dust), (cylinder(0.25, 0.045, -0.3, 0.022, -0.25), dust)])
+    # The containment trap (a dark pad with a glowing purple ring) and a placeholder for other players' pawns (blockout capsule).
+    ring = mat("TrapRing", (0.25, 0.05, 0.4), 0.0, 0.3, (0.65, 0.2, 1.0), 3.0)
+    W("gs_trap", [(cylinder(0.55, 0.1, 0, 0.05, 0), trim), (cylinder(0.7, 0.04, 0, 0.02, 0), ring)])
+    pawn_body = mat("PawnBody", (0.9, 0.55, 0.1), 0.0, 0.6)
+    W("gs_pawn", [(box(0.5, 0.9, 0.3, 0, 0.95, 0), pawn_body), (sphere(0.17, 0, 1.6, 0), mat("PawnHead", (0.85, 0.65, 0.5), 0.0, 0.7)),
+                  (box(0.18, 0.55, 0.2, -0.13, 0.28, 0), trim), (box(0.18, 0.55, 0.2, 0.13, 0.28, 0), trim)])
     W("gs_ectoplasm", [(cylinder(0.55, 0.03, 0, 0.015, 0), mat("Ecto", (0.1, 0.5, 0.2), 0.0, 0.15, (0.2, 1.0, 0.45), 2.5))])
     W("gs_stain", [(cylinder(0.45, 0.02, 0, 0.011, 0), mat("CursedStain", (0.25, 0.05, 0.4), 0.0, 0.3, (0.7, 0.2, 1.0), 2.0))])
     # Prankster: glowing cyan ghost with a hat (see concept sheet).

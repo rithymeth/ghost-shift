@@ -1838,6 +1838,150 @@
     },
     {
       "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_trap.gltf",
+          "model": "8ac2eee3-4caf-578f-8673-a038fad913ce"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Proxy",
+            "ProxyTrap"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            -100,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "e047628a-9698-5aeb-862b-e3b2edd28713"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_pawn.gltf",
+          "model": "75c60256-3ea0-51a8-8212-f45f4c88eb6d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Proxy",
+            "ProxyPawn"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            -100,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "bed24d0d-df7c-5134-9fe1-ae41d4f3f986"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_pawn.gltf",
+          "model": "75c60256-3ea0-51a8-8212-f45f4c88eb6d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Proxy",
+            "ProxyPawn"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            -100,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "b50593a9-9278-5265-b512-595de7f44a9e"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_pawn.gltf",
+          "model": "75c60256-3ea0-51a8-8212-f45f4c88eb6d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Proxy",
+            "ProxyPawn"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            -100,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "40edb98e-9bba-5c51-8b6e-3803e66a50b4"
+    },
+    {
+      "components": {
         "DirectionalLight": {
           "$v": 1,
           "cast_shadows": true,
