@@ -245,3 +245,26 @@ validation (the company is the host's), property damage and the penalty, bonus o
 future-version save file (the engine refuses it; not exercised here), and a crash in the middle of a save (the engine
 tests the atomic write; this game's use of it was not killed mid-write). A recovery from the backup loses the most
 recent contract's pay, by design of the backup.
+
+# The real input path, and the glow bug it exposed
+
+`tools/play_clean_check.sh <engine build dir>` runs the engine's own player (software Vulkan, virtual display) on
+`Scenes/Play_Clean.ascene`, where the first-person player starts 2.7 m from the ectoplasm and faces it:
+
+| Run | Result |
+|---|---|
+| No input | nothing cleaned |
+| Left mouse (Clean) held | exactly the stain in front is cleaned (`cleaned one (2 left)`); the other two, out of range and not in front, are left alone; no script errors |
+
+This is the first time the **real** input path was exercised: until now cleaning was only tested headless with an
+auto-clean switch or over RPC.
+
+**Bug found by looking at the frames:** after a stain was cleaned its puddle disappeared but its green/purple point light
+stayed on the floor, because nothing linked a stain to the light that makes it glow. Stains and their lights now share a
+`Glow:<name>` tag: the Luau `Contract` script dims the light as the stain is scrubbed and removes it with the stain, and
+the C++ server `CleaningSystem` does the same (tested: the glow goes, an unrelated light stays; mutation caught).
+
+Not covered: the vacuum in the player's hands (there is no first-person vacuum model or cleaning effect), a HUD (the
+player cannot see how much is left), looking down with the mouse, sound, and the networked first-person client (this run
+is the offline player; the networked path is tested only with headless clients). The player turns with the mouse, which
+this scripted run does not exercise.

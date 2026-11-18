@@ -18,6 +18,14 @@ local function quat_forward(r)
     return -2 * (x * z + w * y), -(1 - 2 * (x * x + y * y))
 end
 
+local function glow_tag(entity)
+    if not entity:Has("Tags") then return nil end
+    for _, tag in ipairs(entity:Get("Tags").names) do
+        if string.sub(tag, 1, 5) == "Glow:" then return tag end
+    end
+    return nil
+end
+
 local function has_tag(entity, wanted)
     if not entity:Has("Tags") then return false end
     for _, tag in ipairs(entity:Get("Tags").names) do
@@ -33,9 +41,19 @@ function Contract:OnCreate()
     for _, entity in ipairs(world:EntitiesWith("Tags")) do
         if has_tag(entity, "Contamination") and entity:Has("Transform") then
             local s = entity:Get("Transform").scale
-            table.insert(self.items, { entity = entity, hp = 1.0, sx = s.x, sy = s.y, sz = s.z })
+            table.insert(self.items, { entity = entity, hp = 1.0, sx = s.x, sy = s.y, sz = s.z, glow = glow_tag(entity), lights = {} })
         elseif has_tag(entity, "Player") then
             self.player = entity
+        end
+    end
+    -- Each contamination's glow: the lights that share its "Glow:<name>" tag, with their starting intensity.
+    for _, item in ipairs(self.items) do
+        if item.glow ~= nil then
+            for _, light in ipairs(world:EntitiesWith("PointLight")) do
+                if has_tag(light, item.glow) then
+                    table.insert(item.lights, { entity = light, base = light:Get("PointLight").intensity })
+                end
+            end
         end
     end
     self.total = #self.items
@@ -68,10 +86,12 @@ function Contract:OnUpdate(dt)
     local t = item.entity:Get("Transform")
     local k = math.max(item.hp, 0.05)
     t.scale = vector.create(item.sx * k, item.sy, item.sz * k) -- the puddle shrinks as it is scrubbed
+    for _, light in ipairs(item.lights) do light.entity:Get("PointLight").intensity = light.base * math.max(item.hp, 0) end
     if item.hp <= 0 then
         for i, other in ipairs(self.items) do
             if other == item then table.remove(self.items, i) break end
         end
+        for _, light in ipairs(item.lights) do world:Destroy(light.entity) end -- the glow goes with the stain
         world:Destroy(item.entity)
         print(string.format("[Contract] cleaned one (%d left)", #self.items))
         if #self.items == 0 then

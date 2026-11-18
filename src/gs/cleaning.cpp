@@ -64,7 +64,17 @@ void CleaningSystem::Update(World& world, f64 now) {
         }
         player.inbox_n = 0;
     });
-    for (const Entity e : cleaned) world.DestroyEntity(e);
+    for (const Entity e : cleaned) {
+        // The glow goes with the stain: lights that share its "Glow:<name>" tag.
+        if (const Tags* tags = world.GetComponent<Tags>(e)) {
+            const std::vector<std::string> names = tags->names; // copy: the entity is destroyed below
+            for (const std::string& tag : names) {
+                if (tag.rfind("Glow:", 0) != 0) continue;
+                for (const Entity light : FindEntitiesWithTag(world, tag)) if (light != e) world.DestroyEntity(light);
+            }
+        }
+        world.DestroyEntity(e);
+    }
     if (!cleaned.empty() && remaining_ == 0) AETHER_LOG_INFO("Contract", "COMPLETE: %u/%u cleaned", total_, total_);
 }
 

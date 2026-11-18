@@ -1358,7 +1358,8 @@
           "$v": 1,
           "names": [
             "Lookdev",
-            "Contamination"
+            "Contamination",
+            "Glow:ecto_a"
           ]
         },
         "Transform": {
@@ -1394,7 +1395,8 @@
           "$v": 1,
           "names": [
             "Lookdev",
-            "Contamination"
+            "Contamination",
+            "Glow:stain_a"
           ]
         },
         "Transform": {
@@ -1430,7 +1432,8 @@
           "$v": 1,
           "names": [
             "Lookdev",
-            "Contamination"
+            "Contamination",
+            "Glow:stain_b"
           ]
         },
         "Transform": {
@@ -1681,7 +1684,8 @@
           "$v": 1,
           "names": [
             "Lookdev",
-            "Light"
+            "Light",
+            "Glow:stain_a"
           ]
         },
         "Transform": {
@@ -1723,7 +1727,8 @@
           "$v": 1,
           "names": [
             "Lookdev",
-            "Light"
+            "Light",
+            "Glow:stain_b"
           ]
         },
         "Transform": {
@@ -1765,7 +1770,8 @@
           "$v": 1,
           "names": [
             "Lookdev",
-            "Light"
+            "Light",
+            "Glow:ecto_a"
           ]
         },
         "Transform": {

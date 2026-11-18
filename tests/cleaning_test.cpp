@@ -27,6 +27,9 @@ int main() {
     const Entity near_a = AddContamination(world, {-2.4f, 0, -0.5f});
     const Entity near_b = AddContamination(world, {2.6f, 0, 0.8f});
     const Entity far_c = AddContamination(world, {1.8f, 0, -3.0f});
+    AddTag(world, near_a, "Glow:a");
+    const Entity glow_a = world.CreateEntity(Tags{{"Light", "Glow:a"}});    // the light that makes near_a glow
+    const Entity other_light = world.CreateEntity(Tags{{"Light", "Glow:zzz"}}); // belongs to nothing that gets cleaned here
 
     ServerConfig sc;
     sc.port = 0, sc.lan_advertise = false, sc.status_interval = 0;
@@ -80,6 +83,8 @@ int main() {
     step(10);
     CHECK(!world.IsAlive(near_a), "in-range contamination is removed by accepted requests");
     CHECK(cleaning.Remaining() == 2, "two left");
+    CHECK(!world.IsAlive(glow_a), "the glow light goes with the stain it belongs to");
+    CHECK(world.IsAlive(other_light), "an unrelated light is left alone");
 
     // Out of range: 25 requests (a clean needs 15) spaced clear of the cooldown. None may be accepted.
     const i32 acc0 = client.GetWorld().GetComponent<ghostshift::GhostCleaner>(pawn())->accepted;

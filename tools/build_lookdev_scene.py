@@ -68,8 +68,8 @@ def main(project):
         add(name, {"Transform": tf(pos, rot), "Tags": {"$v": 1, "names": list(tags)},
                    "ModelRenderer": {"$v": 1, "asset_path": "Models/%s.gltf" % mdl, "model": model_guid[mdl]}})
 
-    def point(name, pos, color, intensity, rng):
-        add(name, {"Transform": tf(pos), "Tags": {"$v": 1, "names": ["Lookdev", "Light"]},
+    def point(name, pos, color, intensity, rng, glow=None):
+        add(name, {"Transform": tf(pos), "Tags": {"$v": 1, "names": ["Lookdev", "Light"] + (["Glow:" + glow] if glow else [])},
                    "PointLight": {"$v": 1, "color": list(color), "intensity": intensity, "range": rng, "cast_shadows": False}})
 
     # Floor: 3 x 3 tiles of 4 m.
@@ -96,9 +96,9 @@ def main(project):
     model("lamp_left", "gs_lamp", (-4.5, 0, -4.5))
     model("lamp_right", "gs_lamp", (4.5, 0, -4.5))
     model("ghost_prankster", "gs_ghost_prankster", (-1.8, 0.4, -3.8), quat("y", 20), ("Lookdev", "Ghost"))
-    model("ectoplasm_a", "gs_ectoplasm", (1.8, 0, -3.0), tags=("Lookdev", "Contamination"))
-    model("stain_a", "gs_stain", (-2.4, 0, -0.5), tags=("Lookdev", "Contamination"))
-    model("stain_b", "gs_stain", (2.6, 0, 0.8), tags=("Lookdev", "Contamination"))
+    model("ectoplasm_a", "gs_ectoplasm", (1.8, 0, -3.0), tags=("Lookdev", "Contamination", "Glow:ecto_a"))
+    model("stain_a", "gs_stain", (-2.4, 0, -0.5), tags=("Lookdev", "Contamination", "Glow:stain_a"))
+    model("stain_b", "gs_stain", (2.6, 0, 0.8), tags=("Lookdev", "Contamination", "Glow:stain_b"))
     # Lights. Moon: a cool directional light shining in through the window (-Z side, pointing +Z and down).
     moon_rot = qmul(quat("y", 180), quat("x", -40))
     add("moon", {"Transform": tf((0, 5, -8), moon_rot), "Tags": {"$v": 1, "names": ["Lookdev", "Light"]},
@@ -107,9 +107,9 @@ def main(project):
     point("light_lamp_right", (4.5, 1.7, -4.5), (1.0, 0.62, 0.25), 18.0, 9.0)
     point("light_ghost", (-1.8, 1.7, -3.8), (0.2, 0.85, 1.0), 14.0, 7.0)
     point("light_vacuum", (0.2, 1.0, -1.5), (0.2, 0.9, 1.0), 4.0, 3.0)
-    point("light_stain_a", (-2.4, 0.5, -0.5), (0.7, 0.2, 1.0), 6.0, 4.0)
-    point("light_stain_b", (2.6, 0.5, 0.8), (0.7, 0.2, 1.0), 6.0, 4.0)
-    point("light_ecto", (1.8, 0.6, -3.0), (0.2, 1.0, 0.45), 6.0, 4.0)
+    point("light_stain_a", (-2.4, 0.5, -0.5), (0.7, 0.2, 1.0), 6.0, 4.0, "stain_a")
+    point("light_stain_b", (2.6, 0.5, 0.8), (0.7, 0.2, 1.0), 6.0, 4.0, "stain_b")
+    point("light_ecto", (1.8, 0.6, -3.0), (0.2, 1.0, 0.45), 6.0, 4.0, "ecto_a")
 
     # Gameplay: the ghost patrols, and a director entity runs the contract.
     for e in ents:
@@ -154,6 +154,21 @@ def main(project):
             json.dump(out, f, indent=2, sort_keys=True)
             f.write("\n")
 
+    # Playable test: the real first-person controller, starting near the ectoplasm and facing it (so a held Clean button works).
+    def play(name, eye):
+        out = json.loads(json.dumps(scene))
+        out["entities"] = [json.loads(json.dumps(e)) for e in ents]
+        out["entities"].append({"guid": gid("entity:director"), "components": {
+            "Transform": tf((0, 0, 0)), "Tags": {"$v": 1, "names": ["Director"]},
+            "ScriptComponent": {"$v": 1, "script": gid("script:Contract"), "properties": []}}})
+        for e in out["entities"]:
+            if "Player" in e["components"].get("Tags", {}).get("names", []):
+                e["components"]["Transform"]["position"] = list(eye)
+        with open(os.path.join(os.path.dirname(scene_path), name + ".ascene"), "w", newline="\n") as f:
+            json.dump(out, f, indent=2, sort_keys=True)
+            f.write("\n")
+
+    play("Play_Clean", (1.8, 1.7, -0.3))
     shot("Lookdev_A", (-3.2, 1.7, 4.8), (0.0, 1.2, -5.0))   # wide: the window wall, lamps, stains
     shot("Lookdev_B", (1.8, 1.5, 0.6), (0.0, 0.9, -1.8), 55.0)  # close: the table with the vacuum, the ghost behind
     print("scene: %d entities (+ director)" % len(ents))
