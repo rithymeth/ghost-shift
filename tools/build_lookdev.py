@@ -145,22 +145,25 @@ def main(out):
     trim = mat("Trim", (0.10, 0.07, 0.12), 0.0, 0.5)
     W("gs_floor", [(box(4, 0.2, 4, 0, -0.1, 0), wood)])
     W("gs_wall", [(box(4, 3, 0.2, 0, 1.5, 0), plaster), (box(4, 0.15, 0.25, 0, 0.075, 0), trim)])
+    # A real opening (no glass): moonlight can enter, and the sky shows through. Frame trim around the hole.
     W("gs_wall_window", [(box(4, 0.9, 0.2, 0, 0.45, 0), plaster), (box(4, 0.9, 0.2, 0, 2.55, 0), plaster),
                          (box(1.0, 1.2, 0.2, -1.5, 1.5, 0), plaster), (box(1.0, 1.2, 0.2, 1.5, 1.5, 0), plaster),
-                         (box(2.0, 1.2, 0.04, 0, 1.5, 0), mat("MoonGlass", (0.2, 0.3, 0.5), 0.0, 0.1, (0.35, 0.55, 1.0), 2.0))])
+                         (box(2.1, 0.08, 0.3, 0, 0.94, 0.02), trim), (box(2.1, 0.08, 0.3, 0, 2.06, 0.02), trim),
+                         (box(0.08, 1.2, 0.3, -1.0, 1.5, 0.02), trim), (box(0.08, 1.2, 0.3, 1.0, 1.5, 0.02), trim),
+                         (box(0.04, 1.12, 0.06, 0, 1.5, 0), trim), (box(2.0, 0.04, 0.06, 0, 1.5, 0), trim)])
     W("gs_table", [(box(1.4, 0.08, 0.8, 0, 0.76, 0), wood)] + [(box(0.08, 0.76, 0.08, sx * 0.62, 0.38, sz * 0.32), wood) for sx in (-1, 1) for sz in (-1, 1)])
     W("gs_lamp", [(cylinder(0.04, 1.6, 0, 0.8, 0), trim), (sphere(0.18, 0, 1.7, 0), mat("LampGlow", (1, 0.8, 0.5), 0.0, 0.3, (1.0, 0.62, 0.25), 8.0))])
     W("gs_ectoplasm", [(cylinder(0.55, 0.03, 0, 0.015, 0), mat("Ecto", (0.1, 0.5, 0.2), 0.0, 0.15, (0.2, 1.0, 0.45), 2.5))])
     W("gs_stain", [(cylinder(0.45, 0.02, 0, 0.011, 0), mat("CursedStain", (0.25, 0.05, 0.4), 0.0, 0.3, (0.7, 0.2, 1.0), 2.0))])
     # Prankster: glowing cyan ghost with a hat (see concept sheet).
-    ghost = mat("GhostBody", (0.25, 0.8, 0.9), 0.0, 0.2, (0.2, 0.85, 1.0), 3.0)
+    ghost = mat("GhostBody", (0.05, 0.35, 0.45), 0.0, 0.25, (0.1, 0.75, 1.0), 1.6)
     hat = mat("GhostHat", (0.12, 0.06, 0.25), 0.0, 0.5)
     eye = mat("GhostEye", (1, 1, 1), 0.0, 0.1, (1.0, 1.0, 1.0), 6.0)
     W("gs_ghost_prankster", [(sphere(0.45, 0, 1.3, 0, 1.2), ghost), (sphere(0.3, 0, 0.75, 0, 1.6), ghost),
                              (cylinder(0.5, 0.05, 0, 1.68, 0), hat), (cylinder(0.28, 0.3, 0, 1.85, 0), hat),
                              (sphere(0.07, -0.16, 1.35, 0.38), eye), (sphere(0.07, 0.16, 1.35, 0.38), eye)])
     # Spectral vacuum: body, tank, glowing lens (see concept sheet).
-    yellow = mat("VacYellow", (0.95, 0.65, 0.05), 0.6, 0.35)
+    yellow = mat("VacYellow", (1.0, 0.75, 0.05), 0.1, 0.4)
     steel = mat("VacSteel", (0.2, 0.2, 0.24), 0.9, 0.3)
     lens = mat("VacLens", (0.1, 0.4, 0.5), 0.0, 0.1, (0.2, 0.9, 1.0), 8.0)
     W("gs_vacuum", [(cylinder(0.09, 0.8, 0, 0, 0, "z"), steel), (cylinder(0.14, 0.18, 0, 0, -0.45, "z"), steel),

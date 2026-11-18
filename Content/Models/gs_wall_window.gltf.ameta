@@ -6,7 +6,7 @@
   "importer_version": 4,
   "labels": [],
   "settings": {},
-  "source_hash": "fnv1a64:06ee0f6c6e3910e3",
+  "source_hash": "fnv1a64:b4b968b35d752caa",
   "sub_assets": {
     "material:0": {
       "guid": "0d9043ff-38cf-86e1-99ea-3becb272ba00",
@@ -26,6 +26,26 @@
     },
     "material:4": {
       "guid": "a9a35d84-77ab-82fd-a937-608f250cc5e4",
+      "importer": "Material"
+    },
+    "material:5": {
+      "guid": "098c390c-a275-8665-8a2d-265c122ffdcd",
+      "importer": "Material"
+    },
+    "material:6": {
+      "guid": "d3a7a718-40ef-82e9-b3e9-34cc22700d6f",
+      "importer": "Material"
+    },
+    "material:7": {
+      "guid": "a0cae446-8868-8d03-b49b-9036969e8293",
+      "importer": "Material"
+    },
+    "material:8": {
+      "guid": "39da5587-76e3-851c-af0f-f7b1a50a7d7b",
+      "importer": "Material"
+    },
+    "material:9": {
+      "guid": "1cca9f0e-c0cd-85f6-b08e-2bd6393b2dd3",
       "importer": "Material"
     },
     "mesh:0": {

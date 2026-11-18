@@ -201,3 +201,19 @@ What it does not show: the moonlight through the window is not readable (the gho
 scene is a blockout (primitive shapes, no textures, no ceiling), so this is a lighting and pipeline check, not an art
 check. It is a software renderer, so frame rate and GPU behaviour say nothing about real hardware, and the engine states
 that some features (sun shadows) are D3D12-only, so the Windows render may differ.
+
+# Lookdev iteration 2 (software Vulkan) — `docs/images/lookdev_02_wide.png`, `lookdev_03_table.png`
+
+Two fixed-camera shots (`Lookdev_A`, `Lookdev_B`, built by `tools/build_lookdev_scene.py`) make before/after comparisons fair.
+What the first renders showed, and what changed:
+
+| Problem seen in the render | Change |
+|---|---|
+| The window was a solid glowing box (read as a projector screen) and blocked the moonlight | Now a real opening with a frame and mullions; the moon's light enters and lands as a window-shaped patch on the floor |
+| The ghost's cyan washed out to near-white | Darker base colour, lower emissive strength: it reads as cyan |
+| No ceiling, so it did not feel like an interior | Ceiling added; the lamps now light it |
+| The vacuum read as an olive blob (metallic yellow under cyan light) | Less metallic, brighter yellow |
+
+Still weak (blockout stage): the ghost is a pile of spheres, the vacuum is hard to read, the floor is dark, the moon patch is
+modest, and there are no textures, props or detail. Raising the moon's intensity from 1.2 to 4.0 barely changed the patch,
+which I did not investigate. These renders are on a software renderer; the Windows GPU render may differ.

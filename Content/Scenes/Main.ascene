@@ -11,7 +11,7 @@
             0.45,
             0.85
           ],
-          "intensity": 0.35
+          "intensity": 0.5
         },
         "Transform": {
           "$v": 2,
@@ -429,6 +429,321 @@
         }
       },
       "guid": "b0bfc565-bef2-56f7-932a-27a8a3abd77e"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            3.2,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "8b590333-0ef3-573e-8627-92343186a37d"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            3.2,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "819c6d33-6ad4-5587-99d2-5ac8a20bce6e"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            3.2,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "2b2fb935-4189-5dae-99c0-c060f2ab12c2"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            3.2,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "a9e694a2-ce82-5db7-ab26-fcc04f18fc59"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            3.2,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "816288b6-ac82-5add-9311-67d829fe5bbe"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            3.2,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "69f193ef-7b58-58bc-971e-31d85ac4bc68"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            3.2,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "a9a22b50-aecc-51f5-9f83-f43909fed3f7"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            3.2,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "6d9a9b61-1788-5e13-8699-6f59362ce9b9"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            3.2,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "378e4927-7e0c-5198-b6fd-4349de5f5117"
     },
     {
       "components": {
@@ -1150,7 +1465,7 @@
             0.6,
             1.0
           ],
-          "intensity": 1.2
+          "intensity": 4.0
         },
         "Tags": {
           "$v": 1,

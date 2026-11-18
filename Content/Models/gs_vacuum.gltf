@@ -357,26 +357,26 @@
    "name": "VacYellow",
    "pbrMetallicRoughness": {
     "baseColorFactor": [
-     0.95,
-     0.65,
+     1.0,
+     0.75,
      0.05,
      1.0
     ],
-    "metallicFactor": 0.6,
-    "roughnessFactor": 0.35
+    "metallicFactor": 0.1,
+    "roughnessFactor": 0.4
    }
   },
   {
    "name": "VacYellow",
    "pbrMetallicRoughness": {
     "baseColorFactor": [
-     0.95,
-     0.65,
+     1.0,
+     0.75,
      0.05,
      1.0
     ],
-    "metallicFactor": 0.6,
-    "roughnessFactor": 0.35
+    "metallicFactor": 0.1,
+    "roughnessFactor": 0.4
    }
   }
  ],

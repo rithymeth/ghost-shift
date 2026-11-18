@@ -41,7 +41,7 @@ def main(project):
         c = e["components"]
         tags = c.get("Tags", {}).get("names", [])
         if "SkyLight" in c:
-            c["SkyLight"] = {"$v": 1, "color": [0.35, 0.45, 0.85], "intensity": 0.35}
+            c["SkyLight"] = {"$v": 1, "color": [0.35, 0.45, 0.85], "intensity": 0.5}
             keep.append(e)
         elif "Player" in tags:
             c["Transform"]["position"] = [0.0, 1.7, 4.5]
@@ -76,6 +76,10 @@ def main(project):
     for ix in (-4, 0, 4):
         for iz in (-4, 0, 4):
             model("floor_%d_%d" % (ix, iz), "gs_floor", (ix, 0, iz))
+    # Ceiling: the floor slab again, underside at the wall height.
+    for ix in (-4, 0, 4):
+        for iz in (-4, 0, 4):
+            model("ceiling_%d_%d" % (ix, iz), "gs_floor", (ix, 3.2, iz))
     # Walls: back (-Z) with a window in the middle, side walls (+-X), front (+Z) behind the player.
     q90 = quat("y", 90)
     for ix in (-4, 4):
@@ -98,7 +102,7 @@ def main(project):
     # Lights. Moon: a cool directional light shining in through the window (-Z side, pointing +Z and down).
     moon_rot = qmul(quat("y", 180), quat("x", -40))
     add("moon", {"Transform": tf((0, 5, -8), moon_rot), "Tags": {"$v": 1, "names": ["Lookdev", "Light"]},
-                 "DirectionalLight": {"$v": 1, "color": [0.45, 0.6, 1.0], "intensity": 1.2, "cast_shadows": True}})
+                 "DirectionalLight": {"$v": 1, "color": [0.45, 0.6, 1.0], "intensity": 4.0, "cast_shadows": True}})
     point("light_lamp_left", (-4.5, 1.7, -4.5), (1.0, 0.62, 0.25), 18.0, 9.0)
     point("light_lamp_right", (4.5, 1.7, -4.5), (1.0, 0.62, 0.25), 18.0, 9.0)
     point("light_ghost", (-1.8, 1.7, -3.8), (0.2, 0.85, 1.0), 14.0, 7.0)
@@ -125,6 +129,33 @@ def main(project):
 
     write(scene_path, False)
     write(os.path.join(os.path.dirname(scene_path), "M1_Test.ascene"), True)
+
+    # Fixed-camera lookdev shots: the player controller and the ghost's patrol are removed so frames are comparable.
+    def shot(name, eye, target, fov=60.0):
+        out = json.loads(json.dumps(scene))
+        dx, dy, dz = target[0] - eye[0], target[1] - eye[1], target[2] - eye[2]
+        yaw = math.atan2(-dx, -dz)                       # the camera looks down -Z at yaw 0
+        pitch = math.atan2(dy, math.hypot(dx, dz))
+        qy, qx = quat("y", math.degrees(yaw)), quat("x", math.degrees(pitch))
+        rot = qmul(qy, qx)
+        ents2 = []
+        for e in ents:
+            e = json.loads(json.dumps(e))
+            c = e["components"]
+            if "Player" in c.get("Tags", {}).get("names", []):
+                c["Transform"] = tf(eye, rot)
+                c.pop("ScriptComponent", None)
+                c["Camera"]["fov_degrees"] = fov
+            if e["guid"] == gid("entity:ghost_prankster"):
+                c.pop("ScriptComponent", None)
+            ents2.append(e)
+        out["entities"] = ents2
+        with open(os.path.join(os.path.dirname(scene_path), name + ".ascene"), "w", newline="\n") as f:
+            json.dump(out, f, indent=2, sort_keys=True)
+            f.write("\n")
+
+    shot("Lookdev_A", (-3.2, 1.7, 4.8), (0.0, 1.2, -5.0))   # wide: the window wall, lamps, stains
+    shot("Lookdev_B", (1.8, 1.5, 0.6), (0.0, 0.9, -1.8), 55.0)  # close: the table with the vacuum, the ghost behind
     print("scene: %d entities (+ director)" % len(ents))
 
 
