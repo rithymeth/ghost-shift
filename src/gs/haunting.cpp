@@ -80,7 +80,9 @@ void HauntingSystem::Update(World& world, f64 now, u32 cleaned_total) {
             if (d < best) best = d, target = &p;
         }
         if (s == GhostState::Pranking && now >= g.next_prank) {
-            ++g.pranks; // a prank event (item theft and swaps come with the tools)
+            ++g.pranks;
+            if (target && best <= config_.prank_range * config_.prank_range) // the prank: the nearest player finds a different tool in hand
+                target->cleaner->tool = (target->cleaner->tool + 1) % 3;
             g.next_prank = now + config_.prank_interval;
         }
         const bool chasing = target && (s == GhostState::Investigating || s == GhostState::Hunting);

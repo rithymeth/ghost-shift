@@ -50,6 +50,7 @@ struct HauntingConfig {
     f64 stun_seconds = 5.0;
     std::vector<Vec3> patrol;    // waypoints a ghost walks between while it has nobody to chase (empty: it stays put)
     f32 patrol_speed = 1.0f;
+    f32 prank_range = 6.0f;      // a prank swaps the selected tool of the nearest player this close (comedy, not damage)
 };
 
 class HauntingSystem {

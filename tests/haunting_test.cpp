@@ -37,6 +37,22 @@ struct Player {
     }
 };
 
+static void PrankTest() {
+    World w;
+    net::NetIdentity pid, gid;
+    GhostCleaner near_c, far_c;
+    const Entity near_p = w.CreateEntity(pid, Transform{Vec3{2, 0, 0}, Quaternion{}}, near_c);
+    GhostBrain brain;
+    brain.state = static_cast<i32>(GhostState::Pranking);
+    w.CreateEntity(gid, Transform{Vec3{0, 0, 0}, Quaternion{}}, brain);
+    HauntingSystem h;
+    h.SetIntensity(50.0f); // Active stage: Pranking
+    h.Update(w, 1.0, 0);
+    h.Update(w, 1.1, 0);
+    const bool swapped = w.GetComponent<GhostCleaner>(near_p)->tool != 0;
+    CHECK(swapped, "a prank swaps the selected tool of a player standing near the ghost");
+}
+
 static void PatrolTest() {
     World w;
     net::NetIdentity gid;
@@ -207,6 +223,7 @@ int main() {
         CHECK(w3.GetComponent<GhostBrain>(g3)->attacks >= 2, "once the protection window ends the ghost can attack again");
     }
 
+    PrankTest();
     PatrolTest();
     std::printf("%s (%d failed)\n", g_failed ? "FAILED" : "PASSED", g_failed);
     return g_failed ? 1 : 0;
