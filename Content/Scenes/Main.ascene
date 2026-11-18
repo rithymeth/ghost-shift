@@ -1204,8 +1204,7 @@
       "components": {
         "ModelRenderer": {
           "$v": 1,
-          "asset_path": "Models/gs_vacuum.gltf",
-          "model": "7378208f-a0c9-5e36-ae4c-c146b6589dd3"
+          "asset_path": "Models/gs_vacuum_meshy.glb"
         },
         "Tags": {
           "$v": 1,
@@ -1218,7 +1217,7 @@
           "$v": 2,
           "position": [
             0.2,
-            0.86,
+            1.07,
             -1.5
           ],
           "rotation": [
@@ -1228,9 +1227,9 @@
             0.976296
           ],
           "scale": [
-            1,
-            1,
-            1
+            0.45,
+            0.45,
+            0.45
           ]
         }
       },
@@ -1310,8 +1309,7 @@
       "components": {
         "ModelRenderer": {
           "$v": 1,
-          "asset_path": "Models/gs_ghost_prankster.gltf",
-          "model": "ed6480f2-cd7a-5c12-ba0d-f385e7178663"
+          "asset_path": "Models/gs_ghost_prankster_meshy.glb"
         },
         "ScriptComponent": {
           "$v": 1,
@@ -1329,7 +1327,7 @@
           "$v": 2,
           "position": [
             -1.8,
-            0.4,
+            1.0,
             -3.8
           ],
           "rotation": [
@@ -1339,9 +1337,9 @@
             0.984808
           ],
           "scale": [
-            1,
-            1,
-            1
+            0.95,
+            0.95,
+            0.95
           ]
         }
       },
@@ -1964,8 +1962,7 @@
       "components": {
         "ModelRenderer": {
           "$v": 1,
-          "asset_path": "Models/gs_trap.gltf",
-          "model": "8ac2eee3-4caf-578f-8673-a038fad913ce"
+          "asset_path": "Models/gs_trap_meshy.glb"
         },
         "Tags": {
           "$v": 1,
@@ -1988,9 +1985,9 @@
             1
           ],
           "scale": [
-            1,
-            1,
-            1
+            1.5,
+            1.5,
+            1.5
           ]
         }
       },
