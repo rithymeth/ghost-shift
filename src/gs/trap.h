@@ -24,6 +24,7 @@ struct GhostTools {
     Request inbox[kInbox] = {};                          // server side only
     i32 inbox_n = 0;
     f64 stun_ready = -1.0e9;                             // server side only
+    bool did_stun = false;                               // server side only: this player stunned the ghost that is still stunned
     bool extract_requested = false;                      // server side only: set by Extract, read by ContractSystem
     void Push(Request r) { if (inbox_n < kInbox) inbox[inbox_n++] = r; else ++failed; }
     void PlaceTrap(f32 x, f32 z) { Push({kPlace, x, z}); } // Fn_Server
@@ -42,6 +43,7 @@ struct TrapConfig {
     f32 stun_range = 5.0f;      // a player can stun a ghost this far away
     f64 stun_cooldown = 20.0;
     f32 capture_radius = 3.0f;  // a stunned ghost this close to the trap can be captured
+    bool require_second_player = true; // with two or more players up, the player who stunned the ghost cannot also activate the trap: stun and trap take two people (solo play is unaffected)
     bool stun_needs_awake = true; // a Dormant ghost is not engaged and cannot be stunned: the team has to let the haunting wake it and bait it
 };
 

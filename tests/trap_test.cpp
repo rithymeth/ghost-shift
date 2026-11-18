@@ -100,6 +100,27 @@ int main() {
         CHECK(TrapCount(w) == 0 && tools->stuns == 0 && tools->failed == 2, "a downed player cannot place a trap or stun");
     }
 
+    {
+        World w; // two players up: the stunner cannot also close the trap
+        const Entity a = MakePawn(w, {0, 0, 0});
+        const Entity b = MakePawn(w, {1, 0, 0});
+        const Entity ghost = MakeGhost(w, {0, 0, -3}, GhostState::Hunting);
+        GhostTools* ta = w.GetComponent<GhostTools>(a);
+        GhostTools* tb = w.GetComponent<GhostTools>(b);
+        GhostBrain* brain = w.GetComponent<GhostBrain>(ghost);
+        HauntingSystem haunting;
+        TrapSystem traps;
+        f64 now = 100.0;
+        auto tick = [&] { now += 1.0 / 30.0; traps.Update(w, now, haunting); };
+        ta->PlaceTrap(0.0f, -2.5f); tick();
+        ta->StunGhost(); tick();
+        CHECK(brain->state == static_cast<i32>(GhostState::Stunned), "player A stuns the ghost");
+        ta->ActivateTrap(); tick();
+        CHECK(brain->state == static_cast<i32>(GhostState::Stunned) && ta->captures == 0, "with a teammate up, the stunner cannot activate the trap alone");
+        tb->ActivateTrap(); tick();
+        CHECK(brain->state == static_cast<i32>(GhostState::Contained) && tb->captures == 1, "the teammate activates the trap and the ghost is contained");
+    }
+
     // ---------- End to end: two real clients, the coordinated sequence ----------
     World world;
     net::NetIdentity gid, did;
