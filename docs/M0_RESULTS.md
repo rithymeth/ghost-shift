@@ -187,3 +187,17 @@ Not built or tested: the trap as a physical, carryable object, real tools (the R
 trap failing or being stolen by a Prankster, multiple ghosts, the ghost avoiding or resisting the bait, ghost pathfinding
 (it still walks straight through walls), "extract" as an actual action that ends the contract and pays out, and anything
 rendered or played. The Luau `GhostPatrol` and the C++ ghost remain separate implementations.
+
+# First render (software Vulkan) — what it shows and what it does not
+
+`tools/render_lookdev.sh <engine build dir>` renders the lookdev scene with the engine's own player on lavapipe (software
+Vulkan) under Xvfb: `docs/images/lookdev_01_software_vulkan.png`, 1280x720, frame 40 (7.6 s of game time).
+
+Seen in the render: the player loads the project and runs its three scripts (the ghost patrols); the room is lit by the
+warm lamps and the coloured point lights, which throw coloured pools on the floor (magenta stains, green ectoplasm);
+the Prankster glows cyan with its hat and casts a shadow; the lamps and the ghost have a soft glow.
+
+What it does not show: the moonlight through the window is not readable (the ghost stands in front of it), and the
+scene is a blockout (primitive shapes, no textures, no ceiling), so this is a lighting and pipeline check, not an art
+check. It is a software renderer, so frame rate and GPU behaviour say nothing about real hardware, and the engine states
+that some features (sun shadows) are D3D12-only, so the Windows render may differ.
