@@ -35,7 +35,9 @@ int main() {
           "the Director becomes the replicated 'director' archetype with Haunting and ContractResult");
     CHECK(!w.HasComponent<ScriptComponent>(ghost) && !w.HasComponent<ScriptComponent>(director) && !w.HasComponent<ScriptComponent>(player) && r.scripts_removed == 3,
           "the offline Luau scripts of the ghost, director and template player are removed (C++ owns that logic here)");
-    CHECK(!w.HasComponent<net::NetIdentity>(stain) && !w.HasComponent<net::NetIdentity>(prop), "everything else is left for the server's generic scene replication");
+    const net::NetIdentity* si = w.GetComponent<net::NetIdentity>(stain);
+    CHECK(si && std::strcmp(si->archetype, "scene") == 0, "contamination gets a replicated identity (it is cleaned away, so clients must see it go)");
+    CHECK(!w.HasComponent<net::NetIdentity>(prop), "a static prop is NOT replicated");
     const SceneSetupReport again = PrepareScene(w);
     CHECK(again.scripts_removed == 0 && w.GetComponent<GhostBrain>(ghost)->type == static_cast<i32>(GhostType::Caretaker), "running it twice changes nothing");
     std::printf("%s (%d failed)\n", g_failed ? "FAILED" : "PASSED", g_failed);

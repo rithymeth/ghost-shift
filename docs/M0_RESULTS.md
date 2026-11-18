@@ -497,3 +497,28 @@ playing it. The client is a vertical slice, not a finished client.
 
 Also added: blockouts for the trap (`gs_trap`) and for another player's pawn (`gs_pawn`), and hidden proxy entities for them in the
 scene, parked 100 m below the floor until the client moves them into place. The offline check (`tools/m1_headless.sh`) still passes.
+
+# Spawn points, less replication, and the trap sequence through the client
+
+**Spawn points (fixes the weakness listed above).** Scene entities tagged `SpawnPoint` (four, by the van) are the spawn positions; each
+joiner takes the first point no live pawn is standing at, a leaver's point is reused, and with every point taken the engine's old rule
+(x = players x 2) still applies. `DedicatedServer::SetSpawnPoints` (vendored host). `ghostshift_spawn_test` (4 checks; two mutations
+caught: reuse a taken point, ignore the points).
+
+**Replication trimmed.** `ghostshift_server` now runs with `replicate_scene = false`; only dynamic entities replicate (contamination,
+ghost, director, pawns, trap). Walls, floor tiles and lights stay local, so the 1 KB snapshot budget goes to what changes
+(`PrepareScene` gives contamination its identity; `ghostshift_scene_setup_test` updated).
+
+**The client plays the whole sequence.** New scripted-run options on `ghostshift_client`: `--tap <Key>@<seconds>` (a key down for one
+frame at a wall-clock time) and `--seconds <n>`. `tools/client_check.sh` now has three parts, all passing: (1) an idle client cleans
+nothing; (2) a client facing haunted dust near its spawn point with the sprayer and Clean held gets exactly that dust cleaned; (3) on a
+fresh server with the haunting sped up (`GHOSTSHIFT_HAUNTING_RISE=2`) a client facing the ghost taps T (place trap), Q (stun) at 17 s,
+R (activate) at 19 s and X (extract) at 23 s: the server logs `Trap: ghost contained` and `RETREAT: grade D, payout 0`, and the client
+shows `RETREAT GRADE D $0`, `GHOST CONTAINED` and the haunting back at Quiet (`docs/images/client_03_trap_sequence.png`).
+`tools/assembled_check.sh` (headless player, completion graded S for 1500, company held across restarts) still passes with all of this.
+The sequence is a retreat with payout 0 because the scripted client cleans nothing in that run.
+
+Not covered: mouse look (the look direction is scripted at start; the trap pad is below the view and was not looked at), the van trip and
+tool switching through the client, a second player seen as a proxy pawn, a full completion through the client (it would need the client to
+walk, aim and switch tools for twelve pieces), D3D12/Windows, and a person playing. Timing in part 3 depends on wall-clock speed of a
+software renderer; the margins (ghost awake at about 10 s, stun at 17 s, the Active stage at 20 s) are not wide.

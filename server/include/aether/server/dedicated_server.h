@@ -92,6 +92,10 @@ public:
     DedicatedServer(const DedicatedServer&) = delete;
     DedicatedServer& operator=(const DedicatedServer&) = delete;
 
+    // Ghost Shift: where new pawns spawn (scene entities tagged "SpawnPoint"). Each joiner takes the first point no live pawn is standing at;
+    // with none set (or all taken) the engine's old rule applies: x = number of players x 2.
+    void SetSpawnPoints(std::vector<Vec3> points) { spawn_points_ = std::move(points); }
+
     // Binds the UDP port and starts the session over `world` (which must
     // outlive the server and not be replaced while it runs).
     bool Start(const ServerConfig& config, World& world, std::string* error);
@@ -142,6 +146,7 @@ private:
     std::unordered_map<Entity, f64> move_credit_;
     f64 move_credit_now_ = 0;
     bool move_credit_started_ = false;
+    std::vector<Vec3> spawn_points_;
     std::vector<std::pair<net::PeerId, Entity>> pawns_;
     ServerStats stats_;
     f64 last_now_ = 0;

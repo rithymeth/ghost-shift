@@ -1828,6 +1828,130 @@
     },
     {
       "components": {
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "SpawnPoint"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.0,
+            0,
+            3.2
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "f3bfe630-6df2-516d-aad9-0d8168efe25f"
+    },
+    {
+      "components": {
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "SpawnPoint"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            1.4,
+            0,
+            3.2
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "daf42887-a054-598d-92c5-280de4989c62"
+    },
+    {
+      "components": {
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "SpawnPoint"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -1.4,
+            0,
+            2.2
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "59e0d5ea-24b6-5b64-9bb6-a307eeb1ddd3"
+    },
+    {
+      "components": {
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "SpawnPoint"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            2.8,
+            0,
+            3.2
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "7bd37345-624a-568d-b92b-f2c7e4883da6"
+    },
+    {
+      "components": {
         "ModelRenderer": {
           "$v": 1,
           "asset_path": "Models/gs_trap.gltf",

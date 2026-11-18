@@ -54,6 +54,8 @@ struct Options {
     u32 width = 1280, height = 720;
     f32 yaw_degrees = 0.0f; // initial look direction (for scripted runs)
     i32 select_tool = -1;   // tool to select once joined (for scripted runs)
+    f64 run_seconds = -1.0; // stop after this many wall-clock seconds (for scripted runs)
+    std::vector<std::pair<std::string, f64>> taps; // press a key for one frame at this wall-clock time (for scripted runs)
 };
 
 bool ParseArgs(int argc, char** argv, Options& o) {
@@ -67,6 +69,8 @@ bool ParseArgs(int argc, char** argv, Options& o) {
         else if (a == "--frames" && v) o.frames = std::atoll(argv[++i]);
         else if (a == "--screenshot" && v) o.screenshot = argv[++i];
         else if (a == "--press" && v) o.pressed.push_back(argv[++i]);
+        else if (a == "--seconds" && v) o.run_seconds = std::atof(argv[++i]);
+        else if (a == "--tap" && v) { const std::string t = argv[++i]; const auto at = t.find('@'); if (at == std::string::npos) return false; o.taps.push_back({t.substr(0, at), std::atof(t.c_str() + at + 1)}); }
         else if (a == "--yaw" && v) o.yaw_degrees = static_cast<f32>(std::atof(argv[++i]));
         else if (a == "--select" && v) o.select_tool = std::atoi(argv[++i]);
         else if (a == "--size" && v) { unsigned w = 0, h = 0; if (std::sscanf(argv[++i], "%ux%u", &w, &h) != 2 || w < 64 || h < 64) return false; o.width = w, o.height = h; }
@@ -118,7 +122,7 @@ int main(int argc, char** argv) {
     Options opt;
     if (!ParseArgs(argc, argv, opt)) {
         std::fprintf(stderr, "usage: ghostshift_client --pak <file|dir> --server <ip:port> [--name <text>] [--size WxH] [--backend d3d12|vulkan]\n"
-                             "                         [--frames <n>] [--screenshot <file.bmp>] [--press <Key>]... [--yaw <deg>] [--select <0|1|2>]\n");
+                             "                         [--frames <n>] [--screenshot <file.bmp>] [--press <Key>]... [--yaw <deg>] [--select <0|1|2>] [--tap <Key>@<seconds>]... [--seconds <n>]\n");
         return 2;
     }
     const auto address = net::Address::Parse(opt.server);
@@ -194,6 +198,13 @@ int main(int argc, char** argv) {
         renderer = std::make_unique<SceneRenderer>(*device, *swap_chain, package);
         window->SetCursorMode(CursorMode::Locked);
     }
+    struct Tap { input::Key key; f64 at; bool fired, released; };
+    std::vector<Tap> taps;
+    for (const auto& [name, at] : opt.taps) {
+        const input::Key k = input::KeyFromName(name);
+        if (k == input::Key::None) { std::fprintf(stderr, "ghostshift_client: no key named '%s'\n", name.c_str()); return 2; }
+        taps.push_back({k, at, false, false});
+    }
     std::vector<input::Key> held;
     for (const std::string& name : opt.pressed) {
         const input::Key k = input::KeyFromName(name);
@@ -224,10 +235,16 @@ int main(int argc, char** argv) {
         CallFunction(nw, pawn, type, *type.FindFunction(fn), comp, args, nullptr, &r);
     };
 
-    for (i64 frame = 0; opt.frames < 0 || frame < opt.frames; ++frame) {
+    bool last_frame = false;
+    for (i64 frame = 0; !last_frame && (opt.run_seconds >= 0 || opt.frames < 0 || frame < opt.frames); ++frame) {
+        if (opt.run_seconds >= 0 && seconds() >= opt.run_seconds) last_frame = true; // draw this one, screenshot it, then stop
         if (!window->PumpMessages()) break;
         ApplyWindowEvents(window->TakeEvents(), game.Input());
         for (const input::Key k : held) game.Input().SetButton(k, true);
+        for (Tap& t : taps) { // a scripted tap: down for exactly one frame
+            if (t.fired && !t.released) { game.Input().SetButton(t.key, false); t.released = true; }
+            else if (!t.fired && seconds() >= t.at) { game.Input().SetButton(t.key, true); t.fired = true; }
+        }
         const auto now = Clock::now();
         const f32 real_dt = std::chrono::duration<f32>(now - last).count();
         const f32 dt = std::clamp(real_dt, 0.001f, 0.1f); // a long frame never sends the server a longer step than it allows
@@ -368,7 +385,7 @@ int main(int argc, char** argv) {
         renderer->Draw(game, cmd, slot);
         cmd.Close();
         frame_fences[slot] = device->Submit(cmd, swap_chain.get());
-        if (!opt.screenshot.empty() && !shot_done && opt.frames >= 0 && frame + 1 >= opt.frames) {
+        if (!opt.screenshot.empty() && !shot_done && ((opt.frames >= 0 && frame + 1 >= opt.frames) || last_frame)) {
             std::vector<u8> rgba;
             shot_done = true;
             if (swap_chain->ReadBack(rgba) && SaveBmp(opt.screenshot, swap_chain->Width(), swap_chain->Height(), rgba)) std::fprintf(stderr, "ghostshift_client: saved %s\n", opt.screenshot.c_str());

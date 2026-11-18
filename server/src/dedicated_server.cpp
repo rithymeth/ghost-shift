@@ -156,8 +156,17 @@ void DedicatedServer::OnSessionEvent(const SessionEvent& e) {
         NetIdentity ni;
         SetNetArchetype(ni, kPlayerArchetype);
         ni.owner = e.peer;
-        const f32 x = static_cast<f32>(pawns_.size()) * 2.0f;
-        const Entity pawn = world_->CreateEntity(ni, Transform{Vec3{x, 0, 0}, Quaternion{}}, ServerPlayer{}, ghostshift::GhostCleaner{}, NetMovement{}, ghostshift::GhostTools{});
+        Vec3 at{static_cast<f32>(pawns_.size()) * 2.0f, 0, 0}; // the engine's rule, when there are no spawn points
+        for (const Vec3& point : spawn_points_) {               // Ghost Shift: the first spawn point nobody is standing at
+            bool taken = false;
+            for (const auto& [peer_id, other] : pawns_)
+                if (const Transform* t = world_->IsAlive(other) ? world_->GetComponent<Transform>(other) : nullptr) {
+                    const f32 dx = t->position.x - point.x, dz = t->position.z - point.z;
+                    taken = taken || dx * dx + dz * dz < 1.0f;
+                }
+            if (!taken) { at = point; break; }
+        }
+        const Entity pawn = world_->CreateEntity(ni, Transform{at, Quaternion{}}, ServerPlayer{}, ghostshift::GhostCleaner{}, NetMovement{}, ghostshift::GhostTools{});
         pawns_.push_back({e.peer, pawn});
         const std::optional<PeerInfo> peer = host_->Peer(e.peer);
         AETHER_LOG_INFO("Server", "player joined: '%s' from %s (%zu/%u)", e.name.c_str(),

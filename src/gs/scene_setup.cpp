@@ -51,6 +51,8 @@ SceneSetupReport PrepareScene(World& world) {
         ++report.directors;
     }
     for (const Entity e : FindEntitiesWithTag(world, "Player")) StripScript(world, e, report);
+    for (const Entity e : FindEntitiesWithTag(world, "Contamination")) // dynamic: cleaned away, so they replicate (everything else static stays local)
+        if (world.HasComponent<Transform>(e)) Identify(world, e, "scene");
     report.contamination = static_cast<unsigned>(FindEntitiesWithTag(world, "Contamination").size());
     return report;
 }

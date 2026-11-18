@@ -132,6 +132,7 @@ int main(int argc, char** argv) {
     if (full) {
         GhostTools* gt = w.GetComponent<GhostTools>(pawn());
         const reflect::TypeInfo& tt = reflect::Reflect<GhostTools>();
+        walk_to({-0.9f, 0, -1.0f}, 0.6f); // the spawn point is by the van: walk into the room, within 3 m of where the trap goes
         call(tt, "PlaceTrap", gt, {f32{-1.2f}, f32{-2.5f}});
         const f64 waiting_since = seconds();
         for (int i = 0; i < 30 * 60 && ghost_now() < 1 && seconds() - waiting_since < 60.0; ++i) stand(1);

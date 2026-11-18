@@ -57,3 +57,6 @@ if(GHOSTSHIFT_BUILD_CLIENT)
     add_executable(ghostshift_client client/main.cpp)
     target_link_libraries(ghostshift_client PRIVATE ghostshift_server_core Aether::Game Aether::UI Aether::Renderer)
 endif()
+
+add_executable(ghostshift_spawn_test tests/spawn_test.cpp)
+target_link_libraries(ghostshift_spawn_test PRIVATE ghostshift_server_core)

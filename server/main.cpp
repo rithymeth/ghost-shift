@@ -19,6 +19,7 @@
 #include "gs/haunting.h"
 #include "gs/scene_setup.h"
 #include "gs/trap.h"
+#include "aether/scene/gameplay.h"
 
 #if AETHER_SERVER_PHYSICS
 #include "aether/net/physics_state.h"
@@ -229,6 +230,7 @@ int main(int argc, char** argv) {
         const ghostshift::SceneSetupReport setup = ghostshift::PrepareScene(game.GetWorld());
         AETHER_LOG_INFO("Server", "Ghost Shift scene: %u ghost(s), %u director(s), %u contamination, %u script(s) handed to C++",
                         setup.ghosts, setup.directors, setup.contamination, setup.scripts_removed);
+        config.replicate_scene = false; // Ghost Shift: only dynamic entities (contamination, ghost, director, pawns, trap) replicate; walls, floors and lights stay local
         game.BeginPlay();
 
 #if AETHER_SERVER_PHYSICS
@@ -236,6 +238,13 @@ int main(int argc, char** argv) {
         (void)GetComponentId<net::NetPhysicsState>();
 #endif
         DedicatedServer server;
+        {   // Spawn points come from the scene (entities tagged "SpawnPoint"), in creation order.
+            std::vector<Vec3> points;
+            for (const Entity e : FindEntitiesWithTag(game.GetWorld(), "SpawnPoint"))
+                if (const Transform* t = game.GetWorld().GetComponent<Transform>(e)) points.push_back(t->position);
+            server.SetSpawnPoints(points);
+            AETHER_LOG_INFO("Server", "%zu spawn point(s) from the scene", points.size());
+        }
         if (!server.Start(config, game.GetWorld(), &error)) {
             AETHER_LOG_ERROR("Server", "%s", error.c_str());
             game.EndPlay();
