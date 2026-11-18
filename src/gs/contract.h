@@ -48,6 +48,7 @@ struct ContractResult {
     i32 contained = 0;
     i32 attacks = 0;
     i32 elapsed_seconds = 0;
+    i32 cleaned_mask = 0;     // bit per contamination (CleaningSystem::CleanedMask), updated every tick while the contract runs
 };
 
 // What is saved between sessions (host-owned: the host's company, not each player's).
@@ -102,7 +103,8 @@ AETHER_REFLECT(ghostshift::ContractResult, 1,
     AETHER_FIELD(cleaned_percent, Field_Replicated),
     AETHER_FIELD(contained, Field_Replicated),
     AETHER_FIELD(attacks, Field_Replicated),
-    AETHER_FIELD(elapsed_seconds, Field_Replicated)
+    AETHER_FIELD(elapsed_seconds, Field_Replicated),
+    AETHER_FIELD(cleaned_mask, Field_Replicated)
 )
 AETHER_REFLECT(ghostshift::CompanySave, 1,
     AETHER_FIELD(money),

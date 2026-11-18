@@ -32,11 +32,12 @@ void CleaningSystem::Update(World& world, f64 now) {
         if (targets.empty()) return; // wait until the scene's contamination has network ids
         started_ = true;
         total_ = remaining_ = static_cast<u32>(targets.size());
-        for (const Target& t : targets) health_[t.net_id] = 1.0f;
+        for (const Target& t : targets) health_[t.net_id] = 1.0f, slot_[t.net_id] = next_slot_++;
         AETHER_LOG_INFO("Contract", "started: %u contamination to clean", total_);
     } else {
         for (const Target& t : targets) {
             if (health_.emplace(t.net_id, 1.0f).second) {
+                slot_[t.net_id] = next_slot_++;
                 ++total_, ++remaining_;
                 AETHER_LOG_INFO("Contract", "new contamination appeared (%u left)", remaining_);
             }
@@ -103,6 +104,7 @@ void CleaningSystem::Update(World& world, f64 now) {
             health->second -= config_.work_per_request;
             if (health->second <= 1.0e-4f) {
                 cleaned.push_back(target->entity);
+                if (const auto sl = slot_.find(target->net_id); sl != slot_.end() && sl->second < 32) cleaned_mask_ |= 1u << sl->second;
                 cleaned_positions_.push_back(target->position);
                 health_.erase(health);
                 targets.erase(target);

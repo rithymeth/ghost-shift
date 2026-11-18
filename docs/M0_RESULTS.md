@@ -458,15 +458,42 @@ Not built or tested: any HUD for the tool, tank, battery or canister; the batter
 "revealing" hidden markings (stains are always visible here); collateral damage from the sprayer; a person choosing tools. The offline
 Luau game ignores tool kinds. Pacing is still about a minute for a scripted player, not the 12 to 18 minutes of the design doc.
 
-# First-person client — work in progress (NOT compiled or run yet)
+# First-person client (`ghostshift_client`) — compiled, run against the assembled server
 
-`client/main.cpp` is a first draft of `ghostshift_client`, a first-person client for `ghostshift_server`, written against the
-Aether SDK (the structure of the render loop follows the engine's `aether_player`). **It has not been compiled, linked or run, and is
-not in `CMakeLists.txt`.** It needs an SDK installed from an engine build with the window and Vulkan backends; the one used for the
-tests so far was installed without them. Design: the cooked scene is loaded locally for what you see, every rule and position comes
-from the server (a stain the server removes disappears on the client, the ghost and trap follow the server, other players get a proxy
-pawn), and input goes out as the same RPCs the tests use (WASD predicted movement, hold left mouse to clean, 1/2/3 tool, F van,
-T trap, Q stun, R activate, X extract). The HUD is driven from replicated state.
+`client/main.cpp`, an opt-in target (`-DGHOSTSHIFT_BUILD_CLIENT=ON`; it needs an SDK installed from an engine build with the window and
+Vulkan backends, and the SDK used for the headless tests was installed without them, so I reinstalled one from a full engine build).
+It follows the structure of the engine's `aether_player` and is written against the SDK's `Game`, `SceneRenderer` and `Window`.
+Design: the cooked scene is loaded **locally** for what you see (models, lights, HUD); every rule and position comes from the server;
+a presentation layer maps the replicated entities onto the local scene (the ghost and trap follow the server, other players get a proxy
+pawn, a cleaned stain and its glow disappear); input goes out as the same RPCs the tests use.
+Controls: WASD move, mouse look, hold left mouse to clean, 1/2/3 tool, F empty/recharge at the van, T place trap, Q stun, R activate, X extract.
+
+**What was seen** (software Vulkan under a virtual display, `docs/images/client_01_idle.png`, `client_02_cleaned_one.png`):
+the client joins the server, renders the room with the first-person vacuum in view, and its HUD is driven by replicated state
+(`HAUNTING QUIET`, `CONTAMINATION 0 / 12`, `VACUUM TANK 0.0 / 3.0`). A client that faces a cursed stain, selects the UV scrubber and holds
+Clean gets exactly that stain cleaned by the server (`cleaned one (11 left)`); the client then shows `CONTAMINATION 1 / 12` and
+`UV SCRUBBER BATTERY 1.0 / 2.0` (one unit spent) and the purple stain and its glow are gone. Zero movement corrections.
+`tools/client_check.sh <client build> <server build> <engine build>`: an idle client cleans nothing; the scrubbing client cleans exactly
+one stain (two consecutive runs passed).
+
+**A design flaw this exposed, fixed:** my first presentation layer hid a stain whenever its replicated entity was missing, and the HUD
+showed `5 / 12` cleaned with nobody cleaning. The engine's replication client treats a snapshot with no acknowledged baseline (at start-up,
+or whenever the client reads packets slowly, as this software-rendered one does at about 5 fps) as the complete world, and despawns
+everything missing from it: in one second the client counted 129 spawns and 96 despawns, including its own pawn. "Missing" can therefore
+never mean "cleaned". The server now replicates `ContractResult::cleaned_mask`, a bit per contamination in registration order
+(`CleaningSystem::CleanedMask`), set once and never cleared; the client hides a stain only when its bit is set. Tested in
+`ghostshift_contract_test` (mask 0b11 after cleaning both, 0b01 after one, seen identically by a client).
+
+**Weaknesses found, not fixed:**
+- The engine host spawns each pawn at `x = number of players × 2`, not at a spawn point, and a client that exits without a goodbye keeps
+  its pawn until the 5 s silence timeout, so a second player can spawn 2 m to the side. That is vendored engine code (`server/src/dedicated_server.cpp`).
+  Real spawn points (tagged scene entities) are needed; it also puts later players inside walls.
+- With about 70 scene entities the server replicates every static wall, floor tile and light, which consumes the 1 KB snapshot budget.
+  Only dynamic entities need identities; `replicate_scene` could be off.
+
+**Not covered:** mouse look (only the initial look direction was scripted), the trap, stun and extract through the client, seeing another
+player's proxy pawn, the van trip, the other tools, D3D12/Windows (I could only run software Vulkan), a real window, and any person
+playing it. The client is a vertical slice, not a finished client.
 
 Also added: blockouts for the trap (`gs_trap`) and for another player's pawn (`gs_pawn`), and hidden proxy entities for them in the
 scene, parked 100 m below the floor until the client moves them into place. The offline check (`tools/m1_headless.sh`) still passes.

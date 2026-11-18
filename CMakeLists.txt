@@ -50,3 +50,10 @@ target_link_libraries(ghostshift_tank_test PRIVATE ghostshift_server_core)
 
 add_executable(ghostshift_tools_test tests/tools_test.cpp)
 target_link_libraries(ghostshift_tools_test PRIVATE ghostshift_server_core)
+
+# The first-person client needs an SDK installed from an engine build with the window and Vulkan backends.
+option(GHOSTSHIFT_BUILD_CLIENT "Build ghostshift_client (needs an SDK with the window and graphics backends)" OFF)
+if(GHOSTSHIFT_BUILD_CLIENT)
+    add_executable(ghostshift_client client/main.cpp)
+    target_link_libraries(ghostshift_client PRIVATE ghostshift_server_core Aether::Game Aether::UI Aether::Renderer)
+endif()

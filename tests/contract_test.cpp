@@ -28,7 +28,7 @@ static int g_failed = 0;
 static std::string Slurp(const fs::path& p) { std::ifstream f(p, std::ios::binary); return {std::istreambuf_iterator<char>(f), {}}; }
 static void Spit(const fs::path& p, const std::string& s) { std::ofstream f(p, std::ios::binary | std::ios::trunc); f << s; }
 
-struct Outcome { ContractResult result; CompanySave company; bool second_extract_paid_again = false; };
+struct Outcome { ContractResult result; i32 server_mask = 0; i32 seen_mask = -1; CompanySave company; bool second_extract_paid_again = false; };
 
 // One full session on a real server: 2 clients, 2 stains. `clean_all`: clean both (else only the first), `contain`: the ghost is contained.
 static Outcome RunScenario(bool clean_all, bool contain, const fs::path& dir) {
@@ -122,11 +122,13 @@ static Outcome RunScenario(bool clean_all, bool contain, const fs::path& dir) {
     step(30);
     Outcome out;
     out.result = *world.GetComponent<ContractResult>(director);
+    out.server_mask = out.result.cleaned_mask;
     out.second_extract_paid_again = company.Data().money != money_after_first;
     out.company = company.Data();
     // What a client sees (replicated).
     ContractResult seen;
     players[1]->client->GetWorld().ForEach<ContractResult>([&](ContractResult& r) { seen = r; });
+    out.seen_mask = seen.cleaned_mask;
     out.result.grade = seen.grade == out.result.grade && seen.payout == out.result.payout && seen.state == out.result.state ? out.result.grade : -99;
     return out;
 }
@@ -194,9 +196,11 @@ int main() {
         CHECK(full.result.grade >= 0 && full.result.payout > 0, "clients see a grade and a payout (replicated)");
         CHECK(full.company.money == full.result.payout && full.company.contracts_completed == 1, "the company is paid exactly the payout, once, although two players pressed Extract");
         CHECK(!full.second_extract_paid_again, "a later Extract on a finished contract pays nothing");
+        CHECK(full.server_mask == 0b11 && full.seen_mask == 0b11, "the cleaned mask on the director has a bit per cleaned contamination, and clients see it");
         const Outcome retreat = RunScenario(false, false, base / "retreat");
         std::printf("info: retreat run: state %d grade %d payout %d cleaned %d%%, company money %d\n", retreat.result.state, retreat.result.grade,
                     retreat.result.payout, retreat.result.cleaned_percent, retreat.company.money);
+        CHECK(retreat.server_mask == 0b01 && retreat.seen_mask == 0b01, "only the first stain was cleaned: only its bit is set, on the server and on the client");
         CHECK(retreat.result.state == static_cast<i32>(ContractState::Retreated) && retreat.result.grade == static_cast<i32>(Grade::D), "extracting early is a retreat, graded D");
         CHECK(retreat.result.payout > 0 && retreat.result.payout < full.result.payout, "a retreat pays a partial reward");
         CHECK(retreat.company.contracts_retreated == 1 && retreat.company.contracts_completed == 0 && retreat.company.money == retreat.result.payout,

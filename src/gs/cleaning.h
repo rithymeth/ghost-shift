@@ -69,11 +69,16 @@ public:
     bool Completed() const { return started_ && remaining_ == 0; }
     // Where contamination was cleaned this session (in order): what a Caretaker ghost re-dirties.
     const std::vector<Vec3>& CleanedPositions() const { return cleaned_positions_; }
+    // A bit per contamination, in the order the contract registered them (the scene's creation order, then late arrivals): set once it is
+    // cleaned, never cleared. Replicated on the director so a client can tell "cleaned" from "not in this snapshot". Slots beyond 31 are not tracked.
+    u32 CleanedMask() const { return cleaned_mask_; }
     u32 Accepted() const { return accepted_total_; } // accepted requests over the whole session (survives players leaving)
 
 private:
     CleaningConfig config_;
     std::vector<Vec3> cleaned_positions_;
+    std::unordered_map<u32, u32> slot_;   // net id -> registration slot
+    u32 next_slot_ = 0, cleaned_mask_ = 0;
     std::unordered_map<u32, f32> health_; // net id -> 1 (dirty) .. 0 (clean)
     bool started_ = false;
     u32 total_ = 0, remaining_ = 0, accepted_total_ = 0;

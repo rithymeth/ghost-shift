@@ -52,6 +52,8 @@ struct Options {
     std::string server, name = "Maya", backend, screenshot;
     i64 frames = -1;
     u32 width = 1280, height = 720;
+    f32 yaw_degrees = 0.0f; // initial look direction (for scripted runs)
+    i32 select_tool = -1;   // tool to select once joined (for scripted runs)
 };
 
 bool ParseArgs(int argc, char** argv, Options& o) {
@@ -65,6 +67,8 @@ bool ParseArgs(int argc, char** argv, Options& o) {
         else if (a == "--frames" && v) o.frames = std::atoll(argv[++i]);
         else if (a == "--screenshot" && v) o.screenshot = argv[++i];
         else if (a == "--press" && v) o.pressed.push_back(argv[++i]);
+        else if (a == "--yaw" && v) o.yaw_degrees = static_cast<f32>(std::atof(argv[++i]));
+        else if (a == "--select" && v) o.select_tool = std::atoi(argv[++i]);
         else if (a == "--size" && v) { unsigned w = 0, h = 0; if (std::sscanf(argv[++i], "%ux%u", &w, &h) != 2 || w < 64 || h < 64) return false; o.width = w, o.height = h; }
         else return false;
     }
@@ -114,7 +118,7 @@ int main(int argc, char** argv) {
     Options opt;
     if (!ParseArgs(argc, argv, opt)) {
         std::fprintf(stderr, "usage: ghostshift_client --pak <file|dir> --server <ip:port> [--name <text>] [--size WxH] [--backend d3d12|vulkan]\n"
-                             "                         [--frames <n>] [--screenshot <file.bmp>] [--press <Key>]...\n");
+                             "                         [--frames <n>] [--screenshot <file.bmp>] [--press <Key>]... [--yaw <deg>] [--select <0|1|2>]\n");
         return 2;
     }
     const auto address = net::Address::Parse(opt.server);
@@ -207,7 +211,8 @@ int main(int argc, char** argv) {
     auto seconds = [&] { return std::chrono::duration<f64>(Clock::now() - t0).count(); };
 
     game.BeginPlay();
-    f32 yaw = 0, pitch = 0;
+    f32 yaw = opt.yaw_degrees * 3.14159265f / 180.0f, pitch = 0;
+    bool selected_once = opt.select_tool < 0;
     std::map<input::Key, bool> was_down;
     f64 next_clean = 0;
     u32 slot = 0;
@@ -262,6 +267,7 @@ int main(int argc, char** argv) {
             const f32 fx = -sy, fz = -cy;
             const reflect::TypeInfo& cleaner_type = reflect::Reflect<GhostCleaner>();
             const reflect::TypeInfo& tools_type = reflect::Reflect<GhostTools>();
+            if (!selected_once) { call(pawn, cleaner_type, "SelectTool", me, {static_cast<i32>(opt.select_tool)}); selected_once = true; }
             if (in.IsDown(input::Key::MouseLeft) && seconds() >= next_clean) { // scrub the nearest stain in front of us
                 Stain* best = nullptr;
                 f32 best_d = 3.0f;
@@ -283,22 +289,25 @@ int main(int argc, char** argv) {
         }
 
         // --- the presentation layer: the server's world onto the local scene ---
-        for (Stain& s : stains) {
+        // Which stains are cleaned: an explicit mask the server replicates on the director. (Never "missing from the snapshot": a client with
+        // no acknowledged baseline, at start-up or when it reads packets slowly, gets partial snapshots and would see everything flicker.)
+        const ContractResult* contract = net_director != kNullEntity ? nw.GetComponent<ContractResult>(net_director) : nullptr;
+        const u32 cleaned_mask = contract ? static_cast<u32>(contract->cleaned_mask) : 0u;
+        for (usize i = 0; i < stains.size(); ++i) {
+            Stain& s = stains[i];
             if (s.removed) continue;
-            if (s.net_id == 0) { // find the replicated entity at this spot (clients see transforms, not tags)
+            if (s.net_id == 0) { // the replicated entity at this spot, needed to name it in a Clean request (clients see transforms, not tags)
                 for (const auto& [id, e] : net.Replication()->Entities()) {
                     const Transform* t = nw.IsAlive(e) ? nw.GetComponent<Transform>(e) : nullptr;
                     const net::NetIdentity* ni = nw.IsAlive(e) ? nw.GetComponent<net::NetIdentity>(e) : nullptr;
                     if (t && ni && std::string(ni->archetype) == "scene" && std::fabs(t->position.x - s.position.x) < 0.05f &&
                         std::fabs(t->position.z - s.position.z) < 0.05f && std::fabs(t->position.y - s.position.y) < 0.05f) { s.net_id = id; break; }
                 }
-            } else {
-                const Entity e = net.Replication()->FindEntity(s.net_id);
-                if (e == kNullEntity || !nw.IsAlive(e)) { // the server cleaned it: remove it and its glow here
-                    for (const Entity l : s.lights) if (world.IsAlive(l)) world.DestroyEntity(l);
-                    if (world.IsAlive(s.entity)) world.DestroyEntity(s.entity);
-                    s.removed = true;
-                }
+            }
+            if (i < 32 && ((cleaned_mask >> i) & 1u)) { // the server cleaned it: remove it and its glow here
+                for (const Entity l : s.lights) if (world.IsAlive(l)) world.DestroyEntity(l);
+                if (world.IsAlive(s.entity)) world.DestroyEntity(s.entity);
+                s.removed = true;
             }
         }
         if (local_ghost != kNullEntity && net_ghost != kNullEntity)
@@ -326,27 +335,27 @@ int main(int argc, char** argv) {
             const GhostBrain* gb = net_ghost != kNullEntity ? nw.GetComponent<GhostBrain>(net_ghost) : nullptr;
             char buf[160];
             std::snprintf(buf, sizeof(buf), "WILLOW HOUSE   HAUNTING %s", h ? StageName(h->stage) : "...");
-            ui::UI::SetText(local_director, "Title", buf);
+            UI::SetText(local_director, "Title", buf);
             std::snprintf(buf, sizeof(buf), "CONTAMINATION  %zu / %zu", cleaned, total_stains);
-            ui::UI::SetText(local_director, "ContamText", buf);
-            ui::UI::SetValue(local_director, "CleanBar", total_stains ? static_cast<f32>(cleaned) / static_cast<f32>(total_stains) : 1.0f);
+            UI::SetText(local_director, "ContamText", buf);
+            UI::SetValue(local_director, "CleanBar", total_stains ? static_cast<f32>(cleaned) / static_cast<f32>(total_stains) : 1.0f);
             std::snprintf(buf, sizeof(buf), "TIME  %02d:%02d", static_cast<int>(seconds()) / 60, static_cast<int>(seconds()) % 60);
-            ui::UI::SetText(local_director, "TimerText", buf);
+            UI::SetText(local_director, "TimerText", buf);
             if (me) {
                 const f32 value = me->tool == 0 ? me->tank : me->tool == 1 ? me->battery : me->spray;
                 const f32 cap = me->tool == 0 ? 3.0f : me->tool == 1 ? 2.0f : 4.0f;
                 std::snprintf(buf, sizeof(buf), "%s  %s %.1f / %.1f%s%s%s", ToolName(me->tool), me->tool == 0 ? "TANK" : me->tool == 1 ? "BATTERY" : "CANISTER",
                               value, cap, me->tank_full ? "  (SERVICE AT THE VAN: F)" : "", me->downed ? "  YOU ARE DOWN" : "",
                               gb && gb->state == static_cast<i32>(GhostState::Contained) ? "  GHOST CONTAINED" : "");
-                ui::UI::SetText(local_director, "Prompt", buf);
+                UI::SetText(local_director, "Prompt", buf);
             } else {
-                ui::UI::SetText(local_director, "Prompt", "CONNECTING...");
+                UI::SetText(local_director, "Prompt", "CONNECTING...");
             }
             if (r && r->state != 0) {
                 std::snprintf(buf, sizeof(buf), "%s  GRADE %s  $%d", r->state == 1 ? "CONTRACT COMPLETE" : "RETREAT", r->grade >= 0 ? GradeName(static_cast<Grade>(r->grade)) : "-", r->payout);
-                ui::UI::SetText(local_director, "Message", buf);
+                UI::SetText(local_director, "Message", buf);
             }
-            ui::UI::SetText(local_director, "Hint", "WASD MOVE   MOUSE LOOK   HOLD LEFT MOUSE CLEAN   1 2 3 TOOL   F VAN   T TRAP   Q STUN   R ACTIVATE   X EXTRACT");
+            UI::SetText(local_director, "Hint", "WASD MOVE   MOUSE LOOK   HOLD LEFT MOUSE CLEAN   1 2 3 TOOL   F VAN   T TRAP   Q STUN   R ACTIVATE   X EXTRACT");
         }
 
         game.Tick(dt);

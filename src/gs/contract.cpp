@@ -77,6 +77,7 @@ void ContractSystem::Update(World& world, f64 now, const CleaningSystem& cleanin
         if (t.extract_requested) extract = true;
         t.extract_requested = false; // consumed: later requests on a finished contract are ignored below
     });
+    world.ForEach<ContractResult>([&](ContractResult& r) { r.cleaned_mask = static_cast<i32>(cleaning.CleanedMask()); }); // live, every tick
     if (state_ != ContractState::Active) return;
     if (started_ < 0.0 && any_player) started_ = now;
     if (!extract) return;
