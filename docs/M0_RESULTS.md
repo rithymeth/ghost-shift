@@ -287,3 +287,26 @@ Not covered: the HUD shows only what the offline Luau rules know. The haunting s
 the contract result and the company payout live in the C++ server and are replicated, but no HUD displays them yet. There
 is no pause or results screen. The layout was judged at 1280x720 only; other resolutions and aspect ratios were not
 looked at. The hint text is hard to read where a bright stain sits behind it. Nothing was checked on real hardware.
+
+# Ghost types, and the Caretaker — results
+
+`GhostBrain` now has a `type` (the design doc's six archetypes: Prankster, Poltergeist, Mimic, Wailer, Hoarder, Caretaker).
+**Only the Prankster and the Caretaker have behaviour of their own so far; the other four are names only.**
+
+Caretaker (design doc: "recontaminates moved belongings", counter "restore room layout"). Placeholder numbers: while it is
+Pranking or Hunting it re-dirties a spot the team already cleaned every 12 s, at most 3 times per contract, so a team can
+always finish. The contract counts the new contamination (the late-registration path). Stunning or containing it stops
+it; its interval restarts when it becomes active again; a Dormant Caretaker does nothing.
+
+`ghostshift_caretaker_test`, 11 checks, all passing: nothing before the interval; a cleaned spot is dirty again afterwards
+and it is the spot that was cleaned; the cap of 3; the team can finish for good after the cap; a Prankster never does it;
+stunned, recovering, contained and dormant Caretakers; mutation checks (any ghost type re-dirties, no cap, ghost state
+ignored, interval not restarting) are each caught.
+
+"Restore the room layout" is not built: there are no movable props yet, so the Caretaker re-dirties cleaning spots only.
+The systems are tested in isolation (no network); the Caretaker has not been run in a networked session.
+
+**An assembly gap to be honest about:** the C++ systems (cleaning, haunting, traps, contract, caretaker) are exercised only
+inside test programs. There is no `ghostshift_server` executable yet that loads the cooked scene and runs them together, and
+the scene's authored ghost is the Luau patrol, not a `GhostBrain`. Building that server, and deciding how scene entities
+map to the replicated ghost, director and contamination archetypes, is the next structural step.

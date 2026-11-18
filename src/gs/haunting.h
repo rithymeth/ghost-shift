@@ -12,6 +12,8 @@ namespace ghostshift {
 using namespace aether;
 
 enum class Stage : i32 { Quiet = 0, Stirring, Active, Dangerous, Critical };
+// The design doc's six archetypes. Only Prankster and Caretaker have their own behaviour so far.
+enum class GhostType : i32 { Prankster = 0, Poltergeist, Mimic, Wailer, Hoarder, Caretaker };
 enum class GhostState : i32 { Dormant = 0, Investigating, Pranking, Hunting, Stunned, Contained };
 
 // On the director entity (archetype "director"): replicated so every client can show the haunting stage.
@@ -22,6 +24,7 @@ struct Haunting {
 
 // On a ghost entity (archetype "ghost").
 struct GhostBrain {
+    i32 type = 0;      // GhostType (replicated)
     i32 state = 0;     // GhostState (replicated)
     i32 pranks = 0;    // prank events so far (replicated)
     i32 attacks = 0;   // players incapacitated so far (replicated)
@@ -71,6 +74,7 @@ AETHER_REFLECT(ghostshift::Haunting, 1,
     AETHER_FIELD(stage, Field_Replicated)
 )
 AETHER_REFLECT(ghostshift::GhostBrain, 1,
+    AETHER_FIELD(type, Field_Replicated),
     AETHER_FIELD(state, Field_Replicated),
     AETHER_FIELD(pranks, Field_Replicated),
     AETHER_FIELD(attacks, Field_Replicated)

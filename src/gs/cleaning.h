@@ -9,6 +9,7 @@
 #include "aether/scene/gameplay.h"
 
 #include <unordered_map>
+#include <vector>
 
 namespace ghostshift {
 using namespace aether;
@@ -45,10 +46,13 @@ public:
     u32 Total() const { return total_; }
     u32 Remaining() const { return remaining_; }
     bool Completed() const { return started_ && remaining_ == 0; }
+    // Where contamination was cleaned this session (in order): what a Caretaker ghost re-dirties.
+    const std::vector<Vec3>& CleanedPositions() const { return cleaned_positions_; }
     u32 Accepted() const { return accepted_total_; } // accepted requests over the whole session (survives players leaving)
 
 private:
     CleaningConfig config_;
+    std::vector<Vec3> cleaned_positions_;
     std::unordered_map<u32, f32> health_; // net id -> 1 (dirty) .. 0 (clean)
     bool started_ = false;
     u32 total_ = 0, remaining_ = 0, accepted_total_ = 0;

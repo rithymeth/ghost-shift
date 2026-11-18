@@ -56,6 +56,7 @@ void CleaningSystem::Update(World& world, f64 now) {
             health->second -= config_.work_per_request;
             if (health->second <= 1.0e-4f) {
                 cleaned.push_back(target->entity);
+                cleaned_positions_.push_back(target->position);
                 health_.erase(health);
                 targets.erase(target);
                 --remaining_;
