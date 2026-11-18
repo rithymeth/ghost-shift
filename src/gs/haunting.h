@@ -52,6 +52,9 @@ public:
     // The counteraction to a hunting ghost (a tool will call this): stunned ghosts stop for stun_seconds.
     bool Stun(World& world, f64 now);
     float Intensity() const { return intensity_; }
+    void SetIntensity(float v) { intensity_ = v; } // for the mission director and tests
+    // True when the world has ghosts and every one is Contained.
+    static bool AllContained(const World& world);
     Stage CurrentStage() const;
 
 private:

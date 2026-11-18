@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Aether CONFIG REQUIRED)
 
 add_library(ghostshift_server_core STATIC
-    server/src/dedicated_server.cpp server/src/server_config.cpp src/gs/cleaning.cpp src/gs/haunting.cpp)
+    server/src/dedicated_server.cpp server/src/server_config.cpp src/gs/cleaning.cpp src/gs/haunting.cpp src/gs/trap.cpp)
 target_include_directories(ghostshift_server_core PUBLIC server/include src)
 target_link_libraries(ghostshift_server_core PUBLIC Aether::Net Aether::Engine)
 
@@ -24,3 +24,6 @@ target_link_libraries(ghostshift_session_test PRIVATE ghostshift_server_core)
 
 add_executable(ghostshift_haunting_test tests/haunting_test.cpp)
 target_link_libraries(ghostshift_haunting_test PRIVATE ghostshift_server_core)
+
+add_executable(ghostshift_trap_test tests/trap_test.cpp)
+target_link_libraries(ghostshift_trap_test PRIVATE ghostshift_server_core)

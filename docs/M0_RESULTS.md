@@ -165,3 +165,25 @@ Not built or tested: Contained (the trap), items and tools the Prankster steals,
 ghost pathfinding (it walks straight at the player through walls), the other five ghost archetypes, scene-authored ghosts
 (the test spawns them with archetype "ghost"; the project's Luau `GhostPatrol` and C++ `HauntingSystem` are separate
 implementations), and anything rendered.
+
+# Containment: trap, stun, Contained — results
+
+Rules (from the design doc's "coordinate placement, baiting, and activation"; all numbers are PLACEHOLDERS): a player can
+place one trap within 3 m of themselves (placing again moves it); a player can stun a ghost within 5 m (20 s cooldown);
+the trap contains a ghost only if the ghost is **Stunned and within 3 m of the trap**. A ghost that is not stunned
+resists. A downed player cannot place, stun or activate. A contained ghost ends the haunting (intensity 0). Extraction
+needs every ghost contained **and** every contamination cleaned.
+
+`ghostshift_trap_test`, 22 checks, all passing: isolated rules (range, NaN input, one trap, resistance, cooldown, distance,
+downed players) plus one end-to-end run with two real clients over loopback UDP: Maya places the trap, an early activation
+fails, the hunting ghost is baited toward the trap, Felix stuns it inside the radius, Maya activates, the ghost is
+contained, the other client sees the ghost and the trap (replicated), the haunting drops to 0, extraction is refused until
+the stains are cleaned and allowed after.
+
+Mutation checks, each caught by the check meant to catch it: capture without a stun, capture from any distance, no stun
+cooldown, downed players allowed to use tools.
+
+Not built or tested: the trap as a physical, carryable object, real tools (the RPCs exist; no tool item calls them), the
+trap failing or being stolen by a Prankster, multiple ghosts, the ghost avoiding or resisting the bait, ghost pathfinding
+(it still walks straight through walls), "extract" as an actual action that ends the contract and pays out, and anything
+rendered or played. The Luau `GhostPatrol` and the C++ ghost remain separate implementations.

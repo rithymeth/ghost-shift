@@ -4,6 +4,7 @@
 #include "aether/server/dedicated_server.h"
 #include "gs/cleaning.h"
 #include "gs/haunting.h"
+#include "gs/trap.h"
 
 #include "aether/core/log.h"
 #include "aether/ecs/remote_call.h"
@@ -32,6 +33,8 @@ void RegisterServerComponents() {
     (void)GetComponentId<net::NetMovement>();
     (void)GetComponentId<ghostshift::Haunting>();
     (void)GetComponentId<ghostshift::GhostBrain>();
+    (void)GetComponentId<ghostshift::GhostTools>();
+    (void)GetComponentId<ghostshift::GhostTrap>();
     (void)GetComponentId<ghostshift::GhostCleaner>(); // Ghost Shift: the pawn's clean request RPC
     (void)GetComponentId<NetIdentity>();
     (void)GetComponentId<Transform>();
@@ -152,7 +155,7 @@ void DedicatedServer::OnSessionEvent(const SessionEvent& e) {
         SetNetArchetype(ni, kPlayerArchetype);
         ni.owner = e.peer;
         const f32 x = static_cast<f32>(pawns_.size()) * 2.0f;
-        const Entity pawn = world_->CreateEntity(ni, Transform{Vec3{x, 0, 0}, Quaternion{}}, ServerPlayer{}, ghostshift::GhostCleaner{}, NetMovement{});
+        const Entity pawn = world_->CreateEntity(ni, Transform{Vec3{x, 0, 0}, Quaternion{}}, ServerPlayer{}, ghostshift::GhostCleaner{}, NetMovement{}, ghostshift::GhostTools{});
         pawns_.push_back({e.peer, pawn});
         const std::optional<PeerInfo> peer = host_->Peer(e.peer);
         AETHER_LOG_INFO("Server", "player joined: '%s' from %s (%zu/%u)", e.name.c_str(),
@@ -396,11 +399,13 @@ bool NetClient::Start(const NetClientConfig& config, f64 now, std::string* error
         w.AddComponent(e, ServerPlayer{});
         w.AddComponent(e, ghostshift::GhostCleaner{}); // Ghost Shift
         w.AddComponent(e, NetMovement{});
+        w.AddComponent(e, ghostshift::GhostTools{});
     });
     rpc_ = std::make_unique<RpcRouter>(*world_ref_, *host_, *replication_, server);
     movement_ = std::make_unique<MovementClient>(*world_ref_, *host_, *replication_, server);
     // Ghost Shift: the haunting director and ghosts are server-owned entities whose state replicates to every client.
     replication_->OnSpawn("director", [](World& w, Entity e, const NetIdentity&) { w.AddComponent(e, ghostshift::Haunting{}); });
+    replication_->OnSpawn("trap", [](World& w, Entity e, const NetIdentity&) { w.AddComponent(e, ghostshift::GhostTrap{}); });
     replication_->OnSpawn("ghost", [](World& w, Entity e, const NetIdentity&) { w.AddComponent(e, ghostshift::GhostBrain{}); });
     start_ = now;
     return true;

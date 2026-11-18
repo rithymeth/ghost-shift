@@ -26,6 +26,12 @@ bool HauntingSystem::Stun(World& world, f64 now) {
     return any;
 }
 
+bool HauntingSystem::AllContained(const World& world) {
+    u32 total = 0, contained = 0;
+    world.ForEach<GhostBrain>([&](GhostBrain& g) { ++total; contained += g.state == static_cast<i32>(GhostState::Contained); });
+    return total > 0 && contained == total;
+}
+
 void HauntingSystem::Update(World& world, f64 now, u32 cleaned_total) {
     const f64 dt = last_now_ < 0 ? 0.0 : std::max(0.0, now - last_now_);
     last_now_ = now;
@@ -38,9 +44,11 @@ void HauntingSystem::Update(World& world, f64 now, u32 cleaned_total) {
     world.ForEach<net::NetIdentity, GhostCleaner, Transform>([&](net::NetIdentity&, GhostCleaner& c, Transform& t) { pawns.push_back({t.position, &c}); });
 
     // Intensity: rises only while someone is in the property; each cleaned contamination gives relief.
-    if (!pawns.empty()) intensity_ += config_.rise_per_second * static_cast<f32>(dt);
+    const bool all_contained = AllContained(world);
+    if (!pawns.empty() && !all_contained) intensity_ += config_.rise_per_second * static_cast<f32>(dt);
     if (cleaned_total > last_cleaned_) intensity_ -= config_.relief_per_clean * static_cast<f32>(cleaned_total - last_cleaned_);
     last_cleaned_ = std::max(last_cleaned_, cleaned_total);
+    if (all_contained) intensity_ = 0.0f; // a contained ghost no longer haunts the property
     intensity_ = std::clamp(intensity_, 0.0f, 100.0f);
     const Stage stage = CurrentStage();
     world.ForEach<Haunting>([&](Haunting& h) { h.intensity = intensity_, h.stage = static_cast<i32>(stage); });
