@@ -96,14 +96,16 @@ def main(project):
     model("lamp_left", "gs_lamp", (-4.5, 0, -4.5))
     model("lamp_right", "gs_lamp", (4.5, 0, -4.5))
     model("ghost_prankster", "gs_ghost_prankster", (-1.8, 0.4, -3.8), quat("y", 20), ("Lookdev", "Ghost"))
-    model("ectoplasm_a", "gs_ectoplasm", (1.8, 0, -3.0), tags=("Lookdev", "Contamination", "Glow:ecto_a"))
-    model("stain_a", "gs_stain", (-2.4, 0, -0.5), tags=("Lookdev", "Contamination", "Glow:stain_a"))
-    model("stain_b", "gs_stain", (2.6, 0, 0.8), tags=("Lookdev", "Contamination", "Glow:stain_b"))
+    model("ectoplasm_a", "gs_ectoplasm", (1.8, 0, -3.0), tags=("Lookdev", "Contamination", "Kind:Ecto", "Glow:ecto_a"))
+    model("stain_a", "gs_stain", (-2.4, 0, -0.5), tags=("Lookdev", "Contamination", "Kind:Stain", "Glow:stain_a"))
+    model("stain_b", "gs_stain", (2.6, 0, 0.8), tags=("Lookdev", "Contamination", "Kind:Stain", "Glow:stain_b"))
     # More contamination (the starter house needs a contract worth playing) and the van that empties the vacuum's tank.
     for name, kind, pos in [("ecto_b", "gs_ectoplasm", (-4.0, 0, -2.0)), ("stain_c", "gs_stain", (4.0, 0, -1.8)),
                             ("ecto_c", "gs_ectoplasm", (-3.2, 0, 3.0)), ("stain_d", "gs_stain", (3.2, 0, 3.4)),
                             ("stain_e", "gs_stain", (0.0, 0, -4.5)), ("ecto_d", "gs_ectoplasm", (-5.0, 0, 0.8))]:
-        model(name, kind, pos, tags=("Lookdev", "Contamination", "Glow:" + name))
+        model(name, kind, pos, tags=("Lookdev", "Contamination", "Kind:Ecto" if kind == "gs_ectoplasm" else "Kind:Stain", "Glow:" + name))
+    for name, pos in [("dust_a", (-1.5, 0, 2.0)), ("dust_b", (1.0, 0, 3.8)), ("dust_c", (4.8, 0, 1.6))]:
+        model(name, "gs_dust", pos, tags=("Lookdev", "Contamination", "Kind:Dust"))
     model("van", "gs_van", (-3.5, 0, 4.7), tags=("Lookdev", "Van"))
     # Lights. Moon: a cool directional light shining in through the window (-Z side, pointing +Z and down).
     moon_rot = qmul(quat("y", 180), quat("x", -40))
@@ -183,6 +185,7 @@ def main(project):
     play("Play_Clean", (1.8, 1.7, -0.3))
     shot("Lookdev_A", (1.5, 1.7, 5.5), (-0.5, 1.0, -4.0))   # wide: the window wall, lamps, stains
     shot("Lookdev_C", (0.0, 1.6, 0.5), (-3.5, 1.0, 4.7), 60.0)  # the van, from inside the room
+    shot("Lookdev_D", (0.0, 2.6, 5.0), (0.0, 0.0, 2.0), 70.0)  # looking down at the dust near the front
     shot("Lookdev_B", (1.8, 1.5, 0.6), (0.0, 0.9, -1.8), 55.0)  # close: the table with the vacuum, the ghost behind
     print("scene: %d entities (+ director)" % len(ents))
 

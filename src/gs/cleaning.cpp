@@ -12,12 +12,21 @@ void CleaningSystem::Update(World& world, f64 now) {
         Entity entity;
         u32 net_id;
         Vec3 position;
+        i32 kind;
     };
     std::vector<Target> targets;
     for (const Entity e : FindEntitiesWithTag(world, "Contamination")) {
         const net::NetIdentity* ni = world.GetComponent<net::NetIdentity>(e);
         const Transform* t = world.GetComponent<Transform>(e);
-        if (ni && ni->net_id != 0 && t) targets.push_back({e, ni->net_id, t->position});
+        i32 kind = static_cast<i32>(Kind::Any);
+        if (const Tags* tags = world.GetComponent<Tags>(e)) {
+            for (const std::string& tag : tags->names) {
+                if (tag == "Kind:Ecto") kind = static_cast<i32>(Kind::Ecto);
+                else if (tag == "Kind:Stain") kind = static_cast<i32>(Kind::Stain);
+                else if (tag == "Kind:Dust") kind = static_cast<i32>(Kind::Dust);
+            }
+        }
+        if (ni && ni->net_id != 0 && t) targets.push_back({e, ni->net_id, t->position, kind});
     }
     if (!started_) {
         if (targets.empty()) return; // wait until the scene's contamination has network ids
@@ -38,14 +47,27 @@ void CleaningSystem::Update(World& world, f64 now) {
     for (const Entity v : FindEntitiesWithTag(world, "Van")) if (const Transform* vt = world.GetComponent<Transform>(v)) vans.push_back(vt->position);
     std::vector<Entity> cleaned;
     world.ForEach<net::NetIdentity, GhostCleaner, Transform>([&](net::NetIdentity&, GhostCleaner& player, Transform& pawn) {
-        if (player.empty_requested) { // emptying the tank needs the van
+        if (!player.resources_init) { // first sight of this player: full charge and canister
+            player.battery = config_.battery_capacity, player.spray = config_.spray_capacity;
+            player.resources_init = true;
+        }
+        if (player.tool_request >= 0) { // SelectTool: only the three real tools
+            if (player.tool_request <= static_cast<i32>(Tool::Sprayer)) player.tool = player.tool_request;
+            else ++player.rejected;
+            player.tool_request = -1;
+        }
+        if (player.empty_requested) { // servicing the vacuum, the UV scrubber and the sprayer needs the van
             player.empty_requested = false;
             bool at_van = false;
             for (const Vec3& v : vans) {
                 const f32 dx = v.x - pawn.position.x, dz = v.z - pawn.position.z;
                 at_van = at_van || dx * dx + dz * dz <= config_.van_range * config_.van_range;
             }
-            if (at_van && !player.downed) { player.tank = 0.0f, player.tank_full = false; ++player.empties; }
+            if (at_van && !player.downed) {
+                player.tank = 0.0f, player.battery = config_.battery_capacity, player.spray = config_.spray_capacity;
+                player.tank_full = false;
+                ++player.empties;
+            }
             else ++player.rejected;
         }
         for (i32 i = 0; i < player.inbox_n; ++i) {
@@ -53,9 +75,14 @@ void CleaningSystem::Update(World& world, f64 now) {
             const auto target = std::find_if(targets.begin(), targets.end(), [&](const Target& t) { return t.net_id == id; });
             const auto health = health_.find(id);
             player.downed = now < player.down_until; // an incapacitated player cannot clean; it recovers by itself
-            const bool room_in_tank = player.tank + config_.work_per_request <= config_.tank_capacity + 1.0e-3f;
+            const f32 w = config_.work_per_request;
+            const bool room_in_tank = player.tool == static_cast<i32>(Tool::Vacuum)       ? player.tank + w <= config_.tank_capacity + 1.0e-3f
+                                      : player.tool == static_cast<i32>(Tool::UvScrubber) ? player.battery - w >= -1.0e-3f
+                                                                                           : player.spray - w >= -1.0e-3f;
             if (!room_in_tank) player.tank_full = true;
-            bool ok = !player.downed && room_in_tank && target != targets.end() && health != health_.end() && now - player.last_accept >= config_.min_interval;
+            const bool right_tool = target == targets.end() || target->kind == static_cast<i32>(Kind::Any) || target->kind == player.tool;
+            if (!right_tool) ++player.wrong_tool;
+            bool ok = !player.downed && room_in_tank && right_tool && target != targets.end() && health != health_.end() && now - player.last_accept >= config_.min_interval;
             if (ok) {
                 const f32 dx = target->position.x - pawn.position.x, dz = target->position.z - pawn.position.z;
                 ok = dx * dx + dz * dz <= config_.range * config_.range;
@@ -66,8 +93,12 @@ void CleaningSystem::Update(World& world, f64 now) {
             }
             ++player.accepted;
             ++accepted_total_;
-            player.tank += config_.work_per_request;
-            player.tank_full = player.tank + config_.work_per_request > config_.tank_capacity + 1.0e-3f;
+            if (player.tool == static_cast<i32>(Tool::Vacuum)) player.tank += w;
+            else if (player.tool == static_cast<i32>(Tool::UvScrubber)) player.battery -= w;
+            else player.spray -= w;
+            player.tank_full = player.tool == static_cast<i32>(Tool::Vacuum)       ? player.tank + w > config_.tank_capacity + 1.0e-3f
+                               : player.tool == static_cast<i32>(Tool::UvScrubber) ? player.battery - w < -1.0e-3f
+                                                                                    : player.spray - w < -1.0e-3f;
             player.last_accept = now;
             health->second -= config_.work_per_request;
             if (health->second <= 1.0e-4f) {

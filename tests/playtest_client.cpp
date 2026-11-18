@@ -65,7 +65,15 @@ int main(int argc, char** argv) {
 
     // The stains (from tools/build_lookdev_scene.py), found among the replicated scene entities by position.
     const std::vector<Vec3> spots = {{-2.4f, 0, -0.5f}, {2.6f, 0, 0.8f}, {1.8f, 0, -3.0f}, {-4.0f, 0, -2.0f}, {4.0f, 0, -1.8f},
-                                     {-3.2f, 0, 3.0f}, {3.2f, 0, 3.4f}, {0.0f, 0, -4.5f}, {-5.0f, 0, 0.8f}};
+                                     {-3.2f, 0, 3.0f}, {3.2f, 0, 3.4f}, {0.0f, 0, -4.5f}, {-5.0f, 0, 0.8f},
+                                     {-1.5f, 0, 2.0f}, {1.0f, 0, 3.8f}, {4.8f, 0, 1.6f}};
+    // Which tool each spot needs (the scene's "Kind:" tags): ectoplasm = vacuum, cursed stains = UV scrubber, dust = sprayer.
+    auto tool_for = [&](const Vec3& p) -> i32 {
+        auto is = [&](float x, float z) { return std::fabs(p.x - x) < 0.01f && std::fabs(p.z - z) < 0.01f; };
+        if (is(1.8f, -3.0f) || is(-4.0f, -2.0f) || is(-3.2f, 3.0f) || is(-5.0f, 0.8f)) return 0; // ectoplasm
+        if (is(-1.5f, 2.0f) || is(1.0f, 3.8f) || is(4.8f, 1.6f)) return 2;                          // dust
+        return 1;                                                                                    // cursed stains
+    };
     const Vec3 van = {-3.5f, 0, 4.7f}; // where the tank is emptied
     auto find = [&](const Vec3& p) -> Entity {
         for (const auto& [id, e] : client.Replication()->Entities()) {
@@ -80,7 +88,7 @@ int main(int argc, char** argv) {
         RemoteCallResult r;
         CallFunction(w, pawn(), type, *type.FindFunction(fn), comp, args, nullptr, &r);
     };
-    int trips = 0; // times the tank was emptied at the van
+    int trips = 0, switches = 0; // times a tool was serviced at the van / switched
     // A real client sends an input every frame, including "no movement" (the movement rule decelerates only when it is stepped).
     auto stand = [&](int frames) { for (int i = 0; i < frames; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); } };
     auto position = [&]() { return w.GetComponent<Transform>(pawn())->position; };
@@ -149,6 +157,12 @@ int main(int argc, char** argv) {
             if (d < best_d) best_d = d, best = i;
         }
         walk_to(pending[best], 2.0f);
+        if (w.GetComponent<GhostCleaner>(pawn())->tool != tool_for(pending[best])) {
+            GhostCleaner* gc = w.GetComponent<GhostCleaner>(pawn());
+            call(reflect::Reflect<GhostCleaner>(), "SelectTool", gc, {static_cast<i32>(tool_for(pending[best]))});
+            stand(6);
+            ++switches;
+        }
         if (clean_spot(pending[best])) { ++cleaned; pending.erase(pending.begin() + static_cast<std::ptrdiff_t>(best)); }
         else empty_at_van(); // the tank filled: go and empty it, then come back to the same stain
     }
@@ -161,7 +175,7 @@ int main(int argc, char** argv) {
     w.ForEach<ContractResult>([&](ContractResult& r) { result = r; });
     const GhostCleaner* gc = w.GetComponent<GhostCleaner>(pawn());
     ghost_state = ghost_now();
-    std::printf("GHOSTSHIFT_PLAYTEST {\"trips\":%d,\"ghost_state\":%d,\"cleaned\":%d,\"state\":%d,\"grade\":%d,\"payout\":%d,\"cleaned_percent\":%d,\"accepted\":%d,\"rejected\":%d}\n",
-                trips, ghost_state, cleaned, result.state, result.grade, result.payout, result.cleaned_percent, gc ? gc->accepted : -1, gc ? gc->rejected : -1);
+    std::printf("GHOSTSHIFT_PLAYTEST {\"switches\":%d,\"trips\":%d,\"ghost_state\":%d,\"cleaned\":%d,\"state\":%d,\"grade\":%d,\"payout\":%d,\"cleaned_percent\":%d,\"accepted\":%d,\"rejected\":%d}\n",
+                switches, trips, ghost_state, cleaned, result.state, result.grade, result.payout, result.cleaned_percent, gc ? gc->accepted : -1, gc ? gc->rejected : -1);
     return result.state != 0 && result.payout > 0 ? 0 : 1;
 }

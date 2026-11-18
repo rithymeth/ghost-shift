@@ -423,3 +423,37 @@ the rules there are the old ones. Two implementations of the rules still exist; 
 
 Not covered: the tank on any HUD, the battery, tool types (vacuum, UV scrubber, sprayer) with different contamination, and a person
 playing any of it.
+
+# Tool types — results
+
+**Rule (server-authoritative, placeholder numbers),** from the design doc's table of contamination and tools:
+
+| Contamination (tag) | Tool | Resource (placeholder) |
+|---|---|---|
+| Ectoplasm (`Kind:Ecto`) | Spectral vacuum | tank: fills, 3 units |
+| Cursed stains (`Kind:Stain`) | UV scrubber | battery: drains, 2 units (power hungry) |
+| Haunted dust (`Kind:Dust`) | Purification sprayer | canister: drains, 4 units |
+| no `Kind` tag | any tool | whichever is selected |
+
+A player selects a tool (`SelectTool`, replicated); a request with the wrong tool is refused and counted (`wrong_tool`); each tool has its
+own resource; the van recharges all of them. Possessed furniture (tether) and residual energy (neutralizer) are **not built**.
+
+**Scene:** twelve contamination pieces: four ectoplasm, five stains, three dust drifts (`docs/images/lookdev_06_three_kinds.png`). My first
+dust was dark grey on a dark floor and read as shadows; it is now pale with a faint cold glow so the three kinds are distinguishable by sight.
+
+`ghostshift_tools_test` (14 checks), all passing. Four mutations are each caught: any tool cleans any kind, the UV scrubber never drains,
+the van does not recharge the battery, a battery that reaches zero refills itself.
+
+**A real bug the test caught while I was writing it:** I first marked "this player's battery and canister are not initialised yet" with
+the value -1 and re-initialised anything below zero. After exactly 30 requests float rounding leaves the battery at about -0.0000002,
+which the code took for "uninitialised" and refilled: an infinite battery. The test showed 60 accepted requests and a battery still at
+2.0. It now uses an explicit flag, and the fourth mutation above reintroduces the old behaviour to prove the check would catch it.
+(I also removed a check of mine that read `|| true` and could never fail.)
+
+**Assembled server, twelve pieces:** the scripted player switches tool as needed (10 switches), services the tools at the van (2 trips),
+180 accepted requests: retreat session `grade D, payout 400`; after a restart the completion session contained the ghost and finished
+`COMPLETED: grade S, payout 1500`; the company held 1900 after another restart.
+
+Not built or tested: any HUD for the tool, tank, battery or canister; the battery draining while a tool is merely held; the UV scrubber
+"revealing" hidden markings (stains are always visible here); collateral damage from the sprayer; a person choosing tools. The offline
+Luau game ignores tool kinds. Pacing is still about a minute for a scripted player, not the 12 to 18 minutes of the design doc.

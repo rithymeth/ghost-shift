@@ -47,3 +47,6 @@ target_link_libraries(ghostshift_scene_setup_test PRIVATE ghostshift_server_core
 
 add_executable(ghostshift_tank_test tests/tank_test.cpp)
 target_link_libraries(ghostshift_tank_test PRIVATE ghostshift_server_core)
+
+add_executable(ghostshift_tools_test tests/tools_test.cpp)
+target_link_libraries(ghostshift_tools_test PRIVATE ghostshift_server_core)

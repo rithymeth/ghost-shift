@@ -1,0 +1,2426 @@
+{
+  "$type": "Scene",
+  "$version": 1,
+  "entities": [
+    {
+      "components": {
+        "SkyLight": {
+          "$v": 1,
+          "color": [
+            0.35,
+            0.45,
+            0.85
+          ],
+          "intensity": 0.5
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "guid": "d9264e39-e2ed-4d72-b0df-e40b28999762"
+    },
+    {
+      "components": {
+        "Camera": {
+          "$v": 1,
+          "far_plane": 1000.0,
+          "fov_degrees": 70.0,
+          "near_plane": 0.1,
+          "ortho_height": 10.0,
+          "priority": 0,
+          "projection": "Perspective"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Player",
+            "MainCamera"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.0,
+            2.6,
+            5.0
+          ],
+          "rotation": [
+            -0.349507,
+            0.0,
+            0.0,
+            0.936934
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "b9e994fe-e3e0-4c38-bdcd-38832eaabeee"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/Floor.gltf",
+          "model": "cc200e7b-b00b-4e1b-9274-1dbfb71463ca"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Ground"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.0,
+            -0.3,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "scale": [
+            40.0,
+            0.2,
+            40.0
+          ]
+        }
+      },
+      "guid": "c6f366a2-b765-4715-8e6b-848390c093d4"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            0,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "0af6e0f7-06a6-56d0-bfca-e3b0bf88f120"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "871ed3f2-c1b3-5097-ae5e-618534779d54"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            0,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "93086625-6edb-5a46-8c33-a81ffbcb2a3b"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            0,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "7dcbfd7e-7306-572c-8b74-5e6d21ac33bd"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "f3be8745-9813-5594-b667-cd9164555918"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            0,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "d61a7500-d34d-51aa-a310-255e8397a48f"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            0,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "f84a7963-9c04-528c-87f4-b773f03db5e0"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "d4087721-9e1f-5e7b-a8e1-544955d9c87a"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            0,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "b0bfc565-bef2-56f7-932a-27a8a3abd77e"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            3.2,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "8b590333-0ef3-573e-8627-92343186a37d"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            3.2,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "819c6d33-6ad4-5587-99d2-5ac8a20bce6e"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            3.2,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "2b2fb935-4189-5dae-99c0-c060f2ab12c2"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            3.2,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "a9e694a2-ce82-5db7-ab26-fcc04f18fc59"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            3.2,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "816288b6-ac82-5add-9311-67d829fe5bbe"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            3.2,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "69f193ef-7b58-58bc-971e-31d85ac4bc68"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            3.2,
+            -4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "a9a22b50-aecc-51f5-9f83-f43909fed3f7"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            3.2,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "6d9a9b61-1788-5e13-8699-6f59362ce9b9"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_floor.gltf",
+          "model": "e004660f-1fe4-5855-930c-422b6667cb1d"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            3.2,
+            4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "378e4927-7e0c-5198-b6fd-4349de5f5117"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            0,
+            -6
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "caf24faa-a3c8-51f2-92be-0a43eb64f1b0"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            0,
+            -6
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "78790854-bf8c-5488-9770-96a0489ec8d2"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall_window.gltf",
+          "model": "9e7aa87e-c296-5148-991a-8b5ac9c3fbef"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            0,
+            -6
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "49709203-1910-5340-8a76-11093d58c300"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -6,
+            0,
+            -4
+          ],
+          "rotation": [
+            0,
+            0.707107,
+            0,
+            0.707107
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "ff099ad1-3b3a-5cef-ba93-e59c9416fe02"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -6,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0.707107,
+            0,
+            0.707107
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "1312a082-d4c8-55b1-898d-b8ca93496589"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -6,
+            0,
+            4
+          ],
+          "rotation": [
+            0,
+            0.707107,
+            0,
+            0.707107
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "b80f720a-8290-54c9-a860-1908a29c5dc4"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            6,
+            0,
+            -4
+          ],
+          "rotation": [
+            0,
+            0.707107,
+            0,
+            0.707107
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "1fadc3b5-acda-578c-986d-485a41a192e9"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            6,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0.707107,
+            0,
+            0.707107
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "9551eba1-80e3-55fd-9979-5b858e3c3900"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            6,
+            0,
+            4
+          ],
+          "rotation": [
+            0,
+            0.707107,
+            0,
+            0.707107
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "05798a99-4659-5514-b433-998670b78da6"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4,
+            0,
+            6
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "da44913f-50f6-598c-b765-f39777483fa0"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            0,
+            6
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "6179affa-209e-5dfa-8b83-afb051705638"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_wall.gltf",
+          "model": "abae51a8-a3f7-563a-aa07-c781453528c9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4,
+            0,
+            6
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "9849bf40-dafc-53e3-8451-c0d4b3412541"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_table.gltf",
+          "model": "caec5ca4-d599-5d34-8de5-5a89dff057ca"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            0,
+            -1.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "6eb2cf19-5ae7-55f6-9ae4-43e76c74474e"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_vacuum.gltf",
+          "model": "7378208f-a0c9-5e36-ae4c-c146b6589dd3"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Tool"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.2,
+            0.86,
+            -1.5
+          ],
+          "rotation": [
+            0,
+            0.21644,
+            0,
+            0.976296
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "c2813bce-1924-569c-b82b-654f43975e1b"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_lamp.gltf",
+          "model": "80414e75-e5b0-546d-a82e-019aa4de9ad9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4.5,
+            0,
+            -4.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "36483c80-9a90-5a40-8d66-6001d544ddfa"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_lamp.gltf",
+          "model": "80414e75-e5b0-546d-a82e-019aa4de9ad9"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4.5,
+            0,
+            -4.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "addd672c-38b2-5ea1-8cc2-7f964de91663"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_ghost_prankster.gltf",
+          "model": "ed6480f2-cd7a-5c12-ba0d-f385e7178663"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Ghost"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -1.8,
+            0.4,
+            -3.8
+          ],
+          "rotation": [
+            0,
+            0.173648,
+            0,
+            0.984808
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "b90d5cf1-5ff6-595f-9e67-87b3ba1cc59d"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_ectoplasm.gltf",
+          "model": "58c9bb1e-f2ef-5094-b67e-59a5c0a9f80b"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Ecto",
+            "Glow:ecto_a"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            1.8,
+            0,
+            -3.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "d1d4562a-c95b-583e-808a-3ca29f9f541d"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_stain.gltf",
+          "model": "4b4d052e-93b2-5a51-8932-aeaa00294918"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Stain",
+            "Glow:stain_a"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -2.4,
+            0,
+            -0.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "69b94047-65cf-5a65-9ba3-6bb82119f866"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_stain.gltf",
+          "model": "4b4d052e-93b2-5a51-8932-aeaa00294918"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Stain",
+            "Glow:stain_b"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            2.6,
+            0,
+            0.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "8b48eca7-fdb2-5006-be3b-0460025e966c"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_ectoplasm.gltf",
+          "model": "58c9bb1e-f2ef-5094-b67e-59a5c0a9f80b"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Ecto",
+            "Glow:ecto_b"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4.0,
+            0,
+            -2.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "19e3918d-08d2-5c2a-8efd-5bf6a7db0959"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_stain.gltf",
+          "model": "4b4d052e-93b2-5a51-8932-aeaa00294918"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Stain",
+            "Glow:stain_c"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4.0,
+            0,
+            -1.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "bf744934-1fa4-581a-b67d-1df0e09b20e6"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_ectoplasm.gltf",
+          "model": "58c9bb1e-f2ef-5094-b67e-59a5c0a9f80b"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Ecto",
+            "Glow:ecto_c"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -3.2,
+            0,
+            3.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "7678356d-9c82-5c74-b1c2-04eb34b9e4c1"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_stain.gltf",
+          "model": "4b4d052e-93b2-5a51-8932-aeaa00294918"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Stain",
+            "Glow:stain_d"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            3.2,
+            0,
+            3.4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "4d227b8e-38af-5bdc-8e17-2e6edf86e61c"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_stain.gltf",
+          "model": "4b4d052e-93b2-5a51-8932-aeaa00294918"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Stain",
+            "Glow:stain_e"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.0,
+            0,
+            -4.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "94b769b5-cd08-560f-ba74-bb555e9a6fb7"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_ectoplasm.gltf",
+          "model": "58c9bb1e-f2ef-5094-b67e-59a5c0a9f80b"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Ecto",
+            "Glow:ecto_d"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -5.0,
+            0,
+            0.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "7f906cce-b00b-5116-876b-44c73b09e1ed"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_dust.gltf",
+          "model": "dd953e99-70ef-50af-840b-fe8010743271"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Dust"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -1.5,
+            0,
+            2.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "dc0f5af5-74bd-506e-9963-301aca9ab51e"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_dust.gltf",
+          "model": "dd953e99-70ef-50af-840b-fe8010743271"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Dust"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            1.0,
+            0,
+            3.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "ddb0913f-6166-5ca9-b691-10882e8be36b"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_dust.gltf",
+          "model": "dd953e99-70ef-50af-840b-fe8010743271"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Dust"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4.8,
+            0,
+            1.6
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "fb95094f-6ab4-556d-8e71-fbd73f2427f9"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_van.gltf",
+          "model": "9ff59e5b-274f-5355-8155-138d72d9bb36"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Van"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -3.5,
+            0,
+            4.7
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "f24d102c-0722-52cb-b9d4-eecadc6cc4ca"
+    },
+    {
+      "components": {
+        "DirectionalLight": {
+          "$v": 1,
+          "cast_shadows": true,
+          "color": [
+            0.45,
+            0.6,
+            1.0
+          ],
+          "intensity": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            5,
+            -8
+          ],
+          "rotation": [
+            -0.0,
+            0.939693,
+            0.34202,
+            0.0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "bd73a654-3c8b-54da-9b43-4c530a1186df"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            1.0,
+            0.62,
+            0.25
+          ],
+          "intensity": 18.0,
+          "range": 9.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4.5,
+            1.7,
+            -4.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "a5520cd3-0aa1-5289-b8cd-26ba920feaf0"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            1.0,
+            0.62,
+            0.25
+          ],
+          "intensity": 18.0,
+          "range": 9.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4.5,
+            1.7,
+            -4.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "4fc9cff5-895d-5cb1-b695-d0f8f439f674"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            0.85,
+            1.0
+          ],
+          "intensity": 14.0,
+          "range": 7.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -1.8,
+            1.7,
+            -3.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "d36048d3-6696-5df8-96ff-fda9771c78a9"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            0.9,
+            1.0
+          ],
+          "intensity": 4.0,
+          "range": 3.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.2,
+            1.0,
+            -1.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "203586d9-2827-557e-881e-03269e307a8f"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.7,
+            0.2,
+            1.0
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:stain_a"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -2.4,
+            0.5,
+            -0.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "2bfd097c-16b0-553f-8ff3-22f8473e3d97"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.7,
+            0.2,
+            1.0
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:stain_b"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            2.6,
+            0.5,
+            0.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "8fefe92a-89a7-53b4-bb9a-39e600effbdb"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            1.0,
+            0.45
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:ecto_a"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            1.8,
+            0.6,
+            -3.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "ab0da5e3-0a00-54da-a5da-279f88e4a061"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            1.0,
+            0.45
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:ecto_b"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4.0,
+            0.6,
+            -2.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "5fd2a686-96b4-50ff-b330-90ab181f19d3"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.7,
+            0.2,
+            1.0
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:stain_c"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4.0,
+            0.5,
+            -1.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "6407b2d7-b2c5-57cf-a9cb-e61f12775aa9"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            1.0,
+            0.45
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:ecto_c"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -3.2,
+            0.6,
+            3.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "3c1f5469-9d93-5644-8312-d2cf4b10c20f"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.7,
+            0.2,
+            1.0
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:stain_d"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            3.2,
+            0.5,
+            3.4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "0c2a4642-fdf2-556c-93d8-e7a1443e1b2f"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.7,
+            0.2,
+            1.0
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:stain_e"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.0,
+            0.5,
+            -4.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "349d1689-5b0b-5233-9432-b745b2337756"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            1.0,
+            0.45
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:ecto_d"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -5.0,
+            0.6,
+            0.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "70fa52d4-c5bc-5737-a454-2a287fcd8d5e"
+    }
+  ]
+}

@@ -159,6 +159,9 @@ def main(out):
     W("gs_van", [(box(1.8, 1.5, 2.4, 0, 0.95, 0), van_body), (box(1.82, 0.12, 2.42, 0, 1.0, 0), van_stripe),
                  (box(1.6, 0.1, 2.0, 0, 1.75, 0), trim), (box(0.3, 0.3, 0.3, -0.7, 0.2, 0.9), trim), (box(0.3, 0.3, 0.3, 0.7, 0.2, 0.9), trim),
                  (box(0.3, 0.3, 0.3, -0.7, 0.2, -0.9), trim), (box(0.3, 0.3, 0.3, 0.7, 0.2, -0.9), trim)])
+    # Haunted dust: a few flat grey-brown drifts (matte, no glow: it is cleaned with the sprayer).
+    dust = mat("HauntedDust", (0.62, 0.57, 0.5), 0.0, 1.0, (0.35, 0.42, 0.55), 0.9)
+    W("gs_dust", [(cylinder(0.5, 0.03, 0, 0.015, 0), dust), (cylinder(0.3, 0.05, 0.35, 0.025, 0.2), dust), (cylinder(0.25, 0.045, -0.3, 0.022, -0.25), dust)])
     W("gs_ectoplasm", [(cylinder(0.55, 0.03, 0, 0.015, 0), mat("Ecto", (0.1, 0.5, 0.2), 0.0, 0.15, (0.2, 1.0, 0.45), 2.5))])
     W("gs_stain", [(cylinder(0.45, 0.02, 0, 0.011, 0), mat("CursedStain", (0.25, 0.05, 0.4), 0.0, 0.3, (0.7, 0.2, 1.0), 2.0))])
     # Prankster: glowing cyan ghost with a hat (see concept sheet).

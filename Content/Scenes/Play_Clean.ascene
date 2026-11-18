@@ -1359,6 +1359,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Ecto",
             "Glow:ecto_a"
           ]
         },
@@ -1396,6 +1397,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Stain",
             "Glow:stain_a"
           ]
         },
@@ -1433,6 +1435,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Stain",
             "Glow:stain_b"
           ]
         },
@@ -1470,6 +1473,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Ecto",
             "Glow:ecto_b"
           ]
         },
@@ -1507,6 +1511,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Stain",
             "Glow:stain_c"
           ]
         },
@@ -1544,6 +1549,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Ecto",
             "Glow:ecto_c"
           ]
         },
@@ -1581,6 +1587,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Stain",
             "Glow:stain_d"
           ]
         },
@@ -1618,6 +1625,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Stain",
             "Glow:stain_e"
           ]
         },
@@ -1655,6 +1663,7 @@
           "names": [
             "Lookdev",
             "Contamination",
+            "Kind:Ecto",
             "Glow:ecto_d"
           ]
         },
@@ -1679,6 +1688,117 @@
         }
       },
       "guid": "7f906cce-b00b-5116-876b-44c73b09e1ed"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_dust.gltf",
+          "model": "dd953e99-70ef-50af-840b-fe8010743271"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Dust"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -1.5,
+            0,
+            2.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "dc0f5af5-74bd-506e-9963-301aca9ab51e"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_dust.gltf",
+          "model": "dd953e99-70ef-50af-840b-fe8010743271"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Dust"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            1.0,
+            0,
+            3.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "ddb0913f-6166-5ca9-b691-10882e8be36b"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_dust.gltf",
+          "model": "dd953e99-70ef-50af-840b-fe8010743271"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Kind:Dust"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4.8,
+            0,
+            1.6
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "fb95094f-6ab4-556d-8e71-fbd73f2427f9"
     },
     {
       "components": {

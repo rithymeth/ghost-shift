@@ -12,6 +12,6 @@ run() { xvfb-run -a -s "-screen 0 1280x720x24" "$B/player/aether_player" --pak "
 idle=$(run); held=$(run --press MouseLeft)
 echo "--- no input:"; echo "$idle"; echo "--- Clean held:"; echo "$held"
 echo "$idle" | grep -q "cleaned" && { echo "FAIL: something was cleaned with no input"; exit 1; }
-echo "$held" | grep -q "cleaned one (8 left)" || { echo "FAIL: holding Clean did not clean the stain in front"; exit 1; }
+echo "$held" | grep -q "cleaned one (11 left)" || { echo "FAIL: holding Clean did not clean the stain in front"; exit 1; }
 echo "$held" | grep -q "Script error" && { echo "FAIL: a script error"; exit 1; }
 echo "play-clean check: PASS"
