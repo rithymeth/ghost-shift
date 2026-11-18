@@ -14,7 +14,7 @@
 #include <iterator>
 #include <memory>
 #include <string>
-#include <unistd.h>
+#include <chrono>
 #include <vector>
 
 using namespace aether;
@@ -158,7 +158,7 @@ int main() {
     }
 
     // ---------- The company save ----------
-    const fs::path base = fs::temp_directory_path() / ("gs_contract_test_" + std::to_string(::getpid()));
+    const fs::path base = fs::temp_directory_path() / ("gs_contract_test_" + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
     fs::remove_all(base);
     {
         const fs::path dir = base / "save";

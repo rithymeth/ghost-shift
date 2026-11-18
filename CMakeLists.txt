@@ -60,3 +60,15 @@ endif()
 
 add_executable(ghostshift_spawn_test tests/spawn_test.cpp)
 target_link_libraries(ghostshift_spawn_test PRIVATE ghostshift_server_core)
+
+# Windows: anything linking the engine and compiling HLSL loads dxcompiler.dll at start-up (the engine's own demos copy it next to
+# the executable). Point this at the engine build's copy, for example <engine build>/<config>/dxcompiler.dll.
+set(GHOSTSHIFT_DXCOMPILER_DLL "" CACHE FILEPATH "Path to dxcompiler.dll, copied next to the executables after the build (Windows)")
+if(WIN32 AND GHOSTSHIFT_DXCOMPILER_DLL)
+    foreach(target ghostshift_server ghostshift_playtest ghostshift_client)
+        if(TARGET ${target})
+            add_custom_command(TARGET ${target} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${GHOSTSHIFT_DXCOMPILER_DLL}" "$<TARGET_FILE_DIR:${target}>/dxcompiler.dll")
+        endif()
+    endforeach()
+endif()
