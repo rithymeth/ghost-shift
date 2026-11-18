@@ -64,3 +64,28 @@ cmake --build build && build/ghostshift_cleaning_test
 ```
 (The engine's `cmake --install` stops at the very end if `aether_player` was not built, as on a headless Linux build; the
 libraries, headers and CMake package files are installed before that point.)
+
+# Networked movement (predicted, server-authoritative) — results
+
+The vendored server host now runs the engine's `MovementServer` and clients run `MovementClient` (prediction +
+reconciliation). Pawns carry `NetMovement`, so the server moves each pawn from its owner's inputs and cleaning range
+follows the server's pawn position instead of its spawn slot.
+
+Same test (`ghostshift_cleaning_test`, real server + client over loopback UDP), 16 checks, all passing:
+
+| Check | Result |
+|---|---|
+| Server moves the pawn from the owner's inputs | passed |
+| Client prediction and server agree within 5 cm; zero reconciliation corrections for an honest client | passed |
+| A pawn that walks into range can clean the far contamination it could not before | passed |
+| Walking away puts it out of range again | passed |
+| Speed hack (claiming `dt = 0.1` every tick) | **found and fixed** |
+
+**Finding:** the engine's `MovementServer` trusts each input's `dt`. A client claiming dt = 0.1 at 30 ticks/s moved
+**16.92 m in one real second against a 6 m/s limit (2.8x)**. The vendored server now gives each pawn a simulated-time
+budget: it may spend at most the real time that has passed, plus a 0.25 s burst. The same attack now moves
+**6.22 m**. This fix lives in the vendored host; it is worth reporting upstream to the engine.
+
+Limits: loopback, one client, no packet loss or latency simulated, so reconciliation under bad networks is untested
+(GDD target: usable at 100-150 ms RTT). Jumping, collision with walls and the 3D first-person camera are not wired
+in the networked path; the pawn walks on a flat plane. A second client and disconnect/reconnect are untested.

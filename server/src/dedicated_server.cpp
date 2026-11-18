@@ -28,6 +28,7 @@ using namespace aether::net;
 
 void RegisterServerComponents() {
     (void)GetComponentId<ServerPlayer>();
+    (void)GetComponentId<net::NetMovement>();
     (void)GetComponentId<ghostshift::GhostCleaner>(); // Ghost Shift: the pawn's clean request RPC
     (void)GetComponentId<NetIdentity>();
     (void)GetComponentId<Transform>();
@@ -82,6 +83,18 @@ bool DedicatedServer::Start(const ServerConfig& config, World& world, std::strin
     SessionHost* session = session_.get();
     replication_->SetRelevancy([session](PeerId peer, Entity) { return session->Player(peer) != nullptr; });
     rpc_ = std::make_unique<RpcRouter>(world, *host_, *replication_);
+    movement_ = std::make_unique<MovementServer>(world, *host_, *replication_);
+    move_credit_.clear();
+    move_credit_started_ = false;
+    movement_->SetStep([this](World&, Entity e, Transform& t, NetMovement& m, const MovementInput& in) {
+        // The engine's MovementServer trusts each input's dt, so a client claiming dt=0.1 every tick moves ~3x too fast.
+        constexpr f64 kBurst = 0.25; // seconds of simulated time a pawn may bank (network jitter, a late packet)
+        f64& credit = move_credit_.try_emplace(e, kBurst).first->second;
+        MovementInput use = in;
+        use.dt = static_cast<f32>(std::max(0.0, std::min<f64>(in.dt, credit)));
+        credit -= use.dt;
+        if (use.dt > 0.0f) StepMovement(t, m, use);
+    });
     stats_ = {};
     profile_ = {};
     profile_snapshot_bytes_ = 0, profile_snapshots_ = 0, profile_last_ = 0;
@@ -109,6 +122,7 @@ void DedicatedServer::Stop() {
     }
     beacon_.reset();
     lan_socket_.Close();
+    movement_.reset();
     rpc_.reset();
     replication_.reset();
     session_.reset();
@@ -135,7 +149,7 @@ void DedicatedServer::OnSessionEvent(const SessionEvent& e) {
         SetNetArchetype(ni, kPlayerArchetype);
         ni.owner = e.peer;
         const f32 x = static_cast<f32>(pawns_.size()) * 2.0f;
-        const Entity pawn = world_->CreateEntity(ni, Transform{Vec3{x, 0, 0}, Quaternion{}}, ServerPlayer{}, ghostshift::GhostCleaner{});
+        const Entity pawn = world_->CreateEntity(ni, Transform{Vec3{x, 0, 0}, Quaternion{}}, ServerPlayer{}, ghostshift::GhostCleaner{}, NetMovement{});
         pawns_.push_back({e.peer, pawn});
         const std::optional<PeerInfo> peer = host_->Peer(e.peer);
         AETHER_LOG_INFO("Server", "player joined: '%s' from %s (%zu/%u)", e.name.c_str(),
@@ -148,6 +162,7 @@ void DedicatedServer::OnSessionEvent(const SessionEvent& e) {
                 if (const ServerPlayer* sp = world_->GetComponent<ServerPlayer>(it->second)) stats_.pings += static_cast<u64>(sp->pings);
                 world_->DestroyEntity(it->second);
             }
+            move_credit_.erase(it->second);
             pawns_.erase(it);
         }
         AETHER_LOG_INFO("Server", "player left: '%s' (%zu/%u)", e.name.c_str(), pawns_.size(), config_.max_players);
@@ -164,10 +179,16 @@ void DedicatedServer::Tick(f64 now) {
     last_now_ = now;
     host_->Update(now);
     for (const NetEvent& e : host_->TakeEvents())
-        if (!session_->HandleEvent(e, now) && !replication_->HandleEvent(e)) rpc_->HandleEvent(e);
+        if (!session_->HandleEvent(e, now) && !replication_->HandleEvent(e) && !rpc_->HandleEvent(e)) movement_->HandleEvent(e);
     session_->Update(now);
     for (const SessionEvent& e : session_->TakeEvents()) OnSessionEvent(e);
     rpc_->Tick(now);
+    {
+        const f64 elapsed = move_credit_started_ ? std::max(0.0, now - move_credit_now_) : 0.0;
+        for (auto& [pawn, credit] : move_credit_) credit = std::min(0.25, credit + elapsed);
+        move_credit_now_ = now, move_credit_started_ = true;
+    }
+    movement_->Update(now);
     replication_->Update(now);
     if (beacon_) {
         beacon_->info.players = session_->Info().players;
@@ -341,6 +362,7 @@ void NetClient::OnSnapshotApplied(net::ReplicationClient::SnapshotAppliedFn fn) 
 }
 
 NetClient::~NetClient() {
+    movement_.reset();
     rpc_.reset();
     replication_.reset();
     session_.reset();
@@ -370,8 +392,10 @@ bool NetClient::Start(const NetClientConfig& config, f64 now, std::string* error
     replication_->OnSpawn(kPlayerArchetype, [](World& w, Entity e, const NetIdentity&) {
         w.AddComponent(e, ServerPlayer{});
         w.AddComponent(e, ghostshift::GhostCleaner{}); // Ghost Shift
+        w.AddComponent(e, NetMovement{});
     });
     rpc_ = std::make_unique<RpcRouter>(*world_ref_, *host_, *replication_, server);
+    movement_ = std::make_unique<MovementClient>(*world_ref_, *host_, *replication_, server);
     start_ = now;
     return true;
 }
@@ -385,7 +409,7 @@ void NetClient::Tick(f64 now) {
         // until the session has successfully joined. A refused client may
         // receive an early empty snapshot while the handshake is in flight.
         if (session_->GetState() != SessionClient::State::Joined) continue;
-        if (!replication_->HandleEvent(e)) rpc_->HandleEvent(e);
+        if (!replication_->HandleEvent(e) && !rpc_->HandleEvent(e)) movement_->HandleEvent(e);
     }
     const SessionClient::State state = session_->GetState();
     if (state == SessionClient::State::Failed) {

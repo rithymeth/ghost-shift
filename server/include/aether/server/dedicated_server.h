@@ -10,6 +10,7 @@
 
 #include "aether/ecs/world.h"
 #include "aether/net/host.h"
+#include "aether/net/prediction.h"
 #include "aether/net/replication.h"
 #include "aether/net/rpc.h"
 #include "aether/net/session.h"
@@ -19,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <unordered_map>
 #include <string>
 #include <vector>
 
@@ -135,6 +137,11 @@ private:
     std::unique_ptr<net::SessionHost> session_;
     std::unique_ptr<net::ReplicationServer> replication_;
     std::unique_ptr<net::RpcRouter> rpc_;
+    std::unique_ptr<net::MovementServer> movement_; // Ghost Shift: predicted movement, server side
+    // Ghost Shift anti-speed-hack: a pawn may spend only as much simulated time as real time has passed (plus a small burst).
+    std::unordered_map<Entity, f64> move_credit_;
+    f64 move_credit_now_ = 0;
+    bool move_credit_started_ = false;
     std::vector<std::pair<net::PeerId, Entity>> pawns_;
     ServerStats stats_;
     f64 last_now_ = 0;
@@ -195,6 +202,8 @@ public:
     bool Done() const { return done_; }
     const NetClientResult& Result();
     World& GetWorld() { return *world_ref_; }
+    // Predicted movement for the pawn this client owns (null before Start).
+    net::MovementClient* Movement() { return movement_.get(); }
     // The active replication stream, for game-host render-only interpolation.
     // Null before Start; owned by this NetClient and never by the renderer.
     net::ReplicationClient* Replication() { return replication_.get(); }
@@ -217,6 +226,7 @@ private:
     std::unique_ptr<net::ReplicationClient> replication_;
     net::ReplicationClient::SnapshotAppliedFn snapshot_applied_;
     std::unique_ptr<net::RpcRouter> rpc_;
+    std::unique_ptr<net::MovementClient> movement_; // Ghost Shift: the owner's prediction and reconciliation
     NetClientResult result_;
     f64 start_ = 0, joined_at_ = -1, rpc_at_ = -1;
     bool done_ = false;

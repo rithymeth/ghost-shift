@@ -4,6 +4,7 @@
 #include "aether/server/dedicated_server.h"
 #include "gs/cleaning.h"
 
+#include <cmath>
 #include <cstdio>
 #include <string>
 #include <unordered_map>
@@ -114,6 +115,52 @@ int main() {
     step(6);
     CHECK(!world.IsAlive(near_b) && !cleaning.Completed(), "contract is not complete while one remains");
     (void)far_c;
+
+    // --- Predicted movement: the pawn is moved by the owner's inputs, the server is authoritative, and range follows it. ---
+    auto serverPawn = [&]() -> Transform* {
+        Transform* found = nullptr;
+        world.ForEach<net::NetIdentity, ghostshift::GhostCleaner, Transform>([&](net::NetIdentity&, ghostshift::GhostCleaner&, Transform& t) { found = &t; });
+        return found;
+    };
+    auto walk = [&](f32 mx, f32 mz, int frames) {
+        for (int i = 0; i < frames; ++i) {
+            client.Movement()->Predict(pawn(), mx, mz, false, 1.0f / 30.0f);
+            step(1);
+        }
+    };
+    CHECK(serverPawn() != nullptr && std::abs(serverPawn()->position.x) < 0.01f, "server pawn starts at its spawn slot");
+    // far_c is at (1.8, 0, -3.0), 3.5 m from the origin. Walk toward it (about 1 m, direction (0.5, -0.87)).
+    walk(0.5f, -0.866f, 20);
+    step(10);
+    const Transform* sp = serverPawn();
+    const Transform* cp = client.GetWorld().GetComponent<Transform>(pawn());
+    CHECK(sp && sp->position.z < -2.0f, "the server moved the pawn from the owner's inputs");
+    CHECK(sp && cp && std::abs(sp->position.x - cp->position.x) < 0.05f && std::abs(sp->position.z - cp->position.z) < 0.05f,
+          "client prediction and the server agree within 5 cm");
+    CHECK(client.Movement()->GetStats().corrections == 0, "no reconciliation corrections were needed");
+    // Now far_c is in range of the moved pawn: the same request that was rejected is accepted.
+    const i32 acc1 = client.GetWorld().GetComponent<ghostshift::GhostCleaner>(pawn())->accepted;
+    for (int i = 0; i < 6; ++i) { clean(far_c); step(4); }
+    step(6);
+    CHECK(client.GetWorld().GetComponent<ghostshift::GhostCleaner>(pawn())->accepted > acc1, "range follows the server's pawn: a moved player can now clean far_c");
+    // Walk away: out of range again.
+    walk(-0.5f, 0.866f, 90);
+    step(10);
+    const i32 acc2 = client.GetWorld().GetComponent<ghostshift::GhostCleaner>(pawn())->accepted;
+    for (int i = 0; i < 6; ++i) { clean(far_c); step(4); }
+    step(6);
+    CHECK(client.GetWorld().GetComponent<ghostshift::GhostCleaner>(pawn())->accepted == acc2, "walking away puts far_c out of range again");
+
+    // Speed hack: how far can a client get by claiming a longer dt than the real tick?
+    {
+        const Transform* before = serverPawn();
+        const f32 z0 = before->position.z;
+        for (int i = 0; i < 30; ++i) { client.Movement()->Predict(pawn(), 0.0f, -1.0f, false, 0.1f); step(1); } // 30 ticks = 1 s real, claims 3 s
+        step(10);
+        const f32 moved = z0 - serverPawn()->position.z;
+        std::printf("info: 1 s of real time claiming dt=0.1 per tick moved the pawn %.2f m (honest limit %.1f m/s)\n", moved, 6.0);
+        CHECK(moved <= 6.0f * (1.0f + 0.25f) + 0.5f, "a client claiming a longer dt than real time cannot out-run the speed limit");
+    }
 
     std::printf("%s (%d failed)\n", g_failed ? "FAILED" : "PASSED", g_failed);
     return g_failed ? 1 : 0;
