@@ -25,6 +25,13 @@ void CleaningSystem::Update(World& world, f64 now) {
         total_ = remaining_ = static_cast<u32>(targets.size());
         for (const Target& t : targets) health_[t.net_id] = 1.0f;
         AETHER_LOG_INFO("Contract", "started: %u contamination to clean", total_);
+    } else {
+        for (const Target& t : targets) {
+            if (health_.emplace(t.net_id, 1.0f).second) {
+                ++total_, ++remaining_;
+                AETHER_LOG_INFO("Contract", "new contamination appeared (%u left)", remaining_);
+            }
+        }
     }
 
     std::vector<Entity> cleaned;
@@ -43,6 +50,7 @@ void CleaningSystem::Update(World& world, f64 now) {
                 continue;
             }
             ++player.accepted;
+            ++accepted_total_;
             player.last_accept = now;
             health->second -= config_.work_per_request;
             if (health->second <= 1.0e-4f) {

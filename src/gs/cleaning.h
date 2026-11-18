@@ -36,17 +36,19 @@ struct CleaningConfig {
 class CleaningSystem {
 public:
     explicit CleaningSystem(CleaningConfig config = {}) : config_(config) {}
+    // Contamination that appears later (a ghost re-contaminating a room) is picked up and counted as it appears.
     // Call once per server tick, after the network has delivered this tick's RPCs.
     void Update(World& world, f64 now);
     u32 Total() const { return total_; }
     u32 Remaining() const { return remaining_; }
     bool Completed() const { return started_ && remaining_ == 0; }
+    u32 Accepted() const { return accepted_total_; } // accepted requests over the whole session (survives players leaving)
 
 private:
     CleaningConfig config_;
     std::unordered_map<u32, f32> health_; // net id -> 1 (dirty) .. 0 (clean)
     bool started_ = false;
-    u32 total_ = 0, remaining_ = 0;
+    u32 total_ = 0, remaining_ = 0, accepted_total_ = 0;
 };
 
 } // namespace ghostshift

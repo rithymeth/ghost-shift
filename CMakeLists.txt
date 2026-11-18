@@ -17,3 +17,7 @@ target_link_libraries(ghostshift_cleaning_test PRIVATE ghostshift_server_core)
 add_executable(ghostshift_netcond_test tests/netcond_test.cpp)
 target_include_directories(ghostshift_netcond_test PRIVATE tests)
 target_link_libraries(ghostshift_netcond_test PRIVATE ghostshift_server_core)
+
+add_executable(ghostshift_session_test tests/session_test.cpp)
+target_include_directories(ghostshift_session_test PRIVATE tests)
+target_link_libraries(ghostshift_session_test PRIVATE ghostshift_server_core)

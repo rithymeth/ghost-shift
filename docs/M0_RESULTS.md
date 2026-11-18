@@ -112,3 +112,27 @@ the networked path yet. The 100-150 ms target is checked for movement and cleani
 
 Still untested: a disconnect or timeout in the middle of a clean, reconnect, loss above 5%, four clients, and any real
 network (two machines, NAT). The relay is test code; it is not a substitute for a real internet run.
+
+# Four players, a pulled cable and a reconnect — results
+
+`ghostshift_session_test`: four clients behind impaired links (40 ms one-way latency, up to 20 ms jitter, 3% loss each
+way) cleaning four contamination. After 20 accepted requests one client vanishes with no goodbye (the relay and client
+stop, as with a pulled cable).
+
+| Check | Result |
+|---|---|
+| Four players join, each sees its own pawn | passed |
+| A player vanishes mid-contract; the other three finish it | passed |
+| Work conserved across the disconnect: exactly 60 accepted requests (4 x 15) | passed |
+| The server times the silent player out (engine default: 5 s of silence) and removes the pawn | passed (4 -> 3 players) |
+| The same player rejoins on a new connection and gets a new pawn | passed |
+| Contamination that appears after the contract started is registered (the Caretaker case) | passed (found and fixed while writing this test) |
+| The rejoined player cleans it; exactly 15 accepted requests; the contract completes again | passed |
+| Mutation check: disabling the late registration makes 3 checks fail | confirmed |
+
+The accepted-request total is tracked by the cleaning system, not summed from pawns, so it survives a player leaving.
+
+Still untested: a disconnect while a request is in flight on a reliable channel, the same name joining while the old
+connection has not timed out yet, loss above 5%, a real network (two machines, NAT, relay), Windows, and any of this in
+the first-person player rather than headless test clients. Mid-session progress is not saved, so a rejoining player
+today gets a fresh pawn and no memory of what they did.
