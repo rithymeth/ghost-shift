@@ -998,6 +998,11 @@
           "asset_path": "Models/gs_ghost_prankster.gltf",
           "model": "ed6480f2-cd7a-5c12-ba0d-f385e7178663"
         },
+        "ScriptComponent": {
+          "$v": 1,
+          "properties": [],
+          "script": "9d65c86c-925f-54ac-b301-9fb27fb6b182"
+        },
         "Tags": {
           "$v": 1,
           "names": [
@@ -1469,6 +1474,41 @@
         }
       },
       "guid": "ab0da5e3-0a00-54da-a5da-279f88e4a061"
+    },
+    {
+      "components": {
+        "ScriptComponent": {
+          "$v": 1,
+          "properties": [],
+          "script": "0577d264-139a-5b22-9d03-4dd7434f4dcf"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Director"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "f4fb0d10-586d-5414-8c9c-c0ef95af0093"
     }
   ]
 }

@@ -107,11 +107,25 @@ def main(project):
     point("light_stain_b", (2.6, 0.5, 0.8), (0.7, 0.2, 1.0), 6.0, 4.0)
     point("light_ecto", (1.8, 0.6, -3.0), (0.2, 1.0, 0.45), 6.0, 4.0)
 
-    scene["entities"] = ents
-    with open(scene_path, "w", newline="\n") as f:
-        json.dump(scene, f, indent=2, sort_keys=True)
-        f.write("\n")
-    print("scene: %d entities" % len(ents))
+    # Gameplay: the ghost patrols, and a director entity runs the contract.
+    for e in ents:
+        if e["guid"] == gid("entity:ghost_prankster"):
+            e["components"]["ScriptComponent"] = {"$v": 1, "script": gid("script:GhostPatrol"), "properties": []}
+
+    def write(path, autoclean):
+        out = dict(scene)
+        director = {"guid": gid("entity:director"), "components": {
+            "Transform": tf((0, 0, 0)), "Tags": {"$v": 1, "names": ["Director"]},
+            "ScriptComponent": {"$v": 1, "script": gid("script:Contract"),
+                                "properties": [{"name": "autoclean", "value": "true"}] if autoclean else []}}}
+        out["entities"] = ents + [director]
+        with open(path, "w", newline="\n") as f:
+            json.dump(out, f, indent=2, sort_keys=True)
+            f.write("\n")
+
+    write(scene_path, False)
+    write(os.path.join(os.path.dirname(scene_path), "M1_Test.ascene"), True)
+    print("scene: %d entities (+ director)" % len(ents))
 
 
 if __name__ == "__main__":
