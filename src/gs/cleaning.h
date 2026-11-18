@@ -17,6 +17,9 @@ using namespace aether;
 struct GhostCleaner {
     static constexpr i32 kInbox = 8;
     i32 requests = 0, accepted = 0, rejected = 0;
+    bool downed = false;      // incapacitated by a ghost: cannot clean until it recovers (replicated)
+    f64 down_until = -1.0e9;  // server side only
+    f64 protected_until = -1.0e9; // server side only: a recovered player cannot be re-attacked straight away
     i32 inbox[kInbox] = {};   // server side only: net ids asked for since the last Update
     i32 inbox_n = 0;
     f64 last_accept = -1.0e9; // server side only
@@ -57,5 +60,6 @@ AETHER_REFLECT(ghostshift::GhostCleaner, 1,
     AETHER_FIELD(requests, Field_Replicated),
     AETHER_FIELD(accepted, Field_Replicated),
     AETHER_FIELD(rejected, Field_Replicated),
+    AETHER_FIELD(downed, Field_Replicated),
     AETHER_METHOD(Clean, Fn_Server, {"net_id"})
 )

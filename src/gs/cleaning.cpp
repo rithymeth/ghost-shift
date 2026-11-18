@@ -40,7 +40,8 @@ void CleaningSystem::Update(World& world, f64 now) {
             const u32 id = static_cast<u32>(player.inbox[i]);
             const auto target = std::find_if(targets.begin(), targets.end(), [&](const Target& t) { return t.net_id == id; });
             const auto health = health_.find(id);
-            bool ok = target != targets.end() && health != health_.end() && now - player.last_accept >= config_.min_interval;
+            player.downed = now < player.down_until; // an incapacitated player cannot clean; it recovers by itself
+            bool ok = !player.downed && target != targets.end() && health != health_.end() && now - player.last_accept >= config_.min_interval;
             if (ok) {
                 const f32 dx = target->position.x - pawn.position.x, dz = target->position.z - pawn.position.z;
                 ok = dx * dx + dz * dz <= config_.range * config_.range;

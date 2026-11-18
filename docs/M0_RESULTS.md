@@ -136,3 +136,32 @@ Still untested: a disconnect while a request is in flight on a reliable channel,
 connection has not timed out yet, loss above 5%, a real network (two machines, NAT, relay), Windows, and any of this in
 the first-person player rather than headless test clients. Mid-session progress is not saved, so a rejoining player
 today gets a fresh pawn and no memory of what they did.
+
+# Haunting and ghost AI (server-authoritative) — results
+
+`ghostshift_haunting_test`: real server and two clients over loopback UDP. Rules come from the design doc (five haunting
+stages; ghost states Dormant, Investigating, Pranking, Hunting, Stunned, Contained; cleaning lowers intensity; attacks
+incapacitate rather than eliminate; every dangerous event has a counteraction). **All numbers are placeholders**
+(`HauntingConfig`, `CleaningConfig`) to be tuned in playtests; they are not design values.
+
+| Check | Result |
+|---|---|
+| Nobody in the property: intensity stays 0, ghost stays Dormant | passed |
+| Intensity climbs Quiet, Stirring, Active, Dangerous in order; ghost follows Dormant, Investigating, Pranking, Hunting | passed (first attack at ~86 s with nobody cleaning) |
+| The ghost pranks while Active; a hunting ghost incapacitates a player | passed |
+| Clients see the stage, the ghost's state and who is downed (replicated) | passed |
+| A downed player's clean requests are not accepted | passed; mutation (rule removed) fails 2 checks |
+| A hunted team can still finish the contract; cleaning relief calms the ghost out of Hunting | passed (completed at ~96 s, intensity 32) |
+| Nobody stays down afterwards | passed |
+| Stun freezes a hunting ghost for its duration, then it recovers | passed (no tool calls it yet) |
+| After recovering, a player is protected for 3 s before they can be re-attacked | passed; mutation (protection removed) fails |
+
+**Weak spot found while testing:** my first end-to-end test passed even with the protection window removed, so it did not
+show that the window matters; two players and fast relief let the team finish anyway. The protection is now tested
+directly (ghost adjacent to a recovering player), but whether a *single* player or a slower team can be locked out has
+not been measured. Tune with playtests.
+
+Not built or tested: Contained (the trap), items and tools the Prankster steals, Stun being triggered by a real tool,
+ghost pathfinding (it walks straight at the player through walls), the other five ghost archetypes, scene-authored ghosts
+(the test spawns them with archetype "ghost"; the project's Luau `GhostPatrol` and C++ `HauntingSystem` are separate
+implementations), and anything rendered.
