@@ -8,6 +8,8 @@
 #include "aether/reflection/reflect_macros.h"
 #include "aether/scene/components.h"
 
+#include <vector>
+
 namespace ghostshift {
 using namespace aether;
 
@@ -32,6 +34,7 @@ struct GhostBrain {
     f64 next_attack = 0.0;
     f64 next_prank = 0.0;
     f64 stunned_until = -1.0;
+    i32 waypoint = 0;        // server side only: next patrol point
 };
 
 struct HauntingConfig {
@@ -45,6 +48,9 @@ struct HauntingConfig {
     f64 attack_cooldown = 2.0;
     f64 prank_interval = 3.0;
     f64 stun_seconds = 5.0;
+    std::vector<Vec3> patrol;    // waypoints a ghost walks between while it has nobody to chase (empty: it stays put)
+    f32 patrol_speed = 1.0f;
+    f32 prank_range = 6.0f;      // a prank swaps the selected tool of the nearest player this close (comedy, not damage)
 };
 
 class HauntingSystem {

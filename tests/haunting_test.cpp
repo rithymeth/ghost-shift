@@ -37,6 +37,38 @@ struct Player {
     }
 };
 
+static void PrankTest() {
+    World w;
+    net::NetIdentity pid, gid;
+    GhostCleaner near_c, far_c;
+    const Entity near_p = w.CreateEntity(pid, Transform{Vec3{2, 0, 0}, Quaternion{}}, near_c);
+    GhostBrain brain;
+    brain.state = static_cast<i32>(GhostState::Pranking);
+    w.CreateEntity(gid, Transform{Vec3{0, 0, 0}, Quaternion{}}, brain);
+    HauntingSystem h;
+    h.SetIntensity(50.0f); // Active stage: Pranking
+    h.Update(w, 1.0, 0);
+    h.Update(w, 1.1, 0);
+    const bool swapped = w.GetComponent<GhostCleaner>(near_p)->tool != 0;
+    CHECK(swapped, "a prank swaps the selected tool of a player standing near the ghost");
+}
+
+static void PatrolTest() {
+    World w;
+    net::NetIdentity gid;
+    GhostBrain brain; // Dormant: nobody to chase
+    const Entity ghost = w.CreateEntity(gid, Transform{Vec3{0, 0, 0}, Quaternion{}}, brain);
+    HauntingConfig cfg;
+    cfg.patrol = {Vec3{4, 0, 0}, Vec3{4, 0, 4}};
+    HauntingSystem h(cfg);
+    f64 now = 0;
+    float max_x = 0, max_z = 0;
+    for (int i = 0; i < 30 * 12; ++i) { now += 1.0 / 30.0; h.Update(w, now, 0); const Vec3 p = w.GetComponent<Transform>(ghost)->position; max_x = std::max(max_x, p.x); max_z = std::max(max_z, p.z); }
+    const bool ok = max_x > 3.5f && max_z > 3.5f;
+    std::printf("%s patrol: a ghost with nobody to chase walks its route (reached x=%.1f z=%.1f)\n", ok ? "ok:  " : "FAIL:", max_x, max_z);
+    if (!ok) ++g_failed;
+}
+
 int main() {
     RegisterServerComponents();
     World world;
@@ -191,6 +223,8 @@ int main() {
         CHECK(w3.GetComponent<GhostBrain>(g3)->attacks >= 2, "once the protection window ends the ghost can attack again");
     }
 
+    PrankTest();
+    PatrolTest();
     std::printf("%s (%d failed)\n", g_failed ? "FAILED" : "PASSED", g_failed);
     return g_failed ? 1 : 0;
 }

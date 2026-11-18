@@ -17,6 +17,13 @@ void TrapSystem::Update(World& world, f64 now, HauntingSystem& haunting) {
     Transform* ghost_pos = nullptr;
     world.ForEach<GhostBrain, Transform>([&](GhostBrain& g, Transform& t) { if (!ghost) ghost = &g, ghost_pos = &t; });
 
+    const bool ghost_stunned = ghost && ghost->state == static_cast<i32>(GhostState::Stunned);
+    i32 players_up = 0;
+    world.ForEach<GhostTools, GhostCleaner>([&](GhostTools& tools, GhostCleaner& cleaner) {
+        if (!ghost_stunned) tools.did_stun = false; // the stun is over: nobody is 'the stunner' any more
+        if (!cleaner.downed && now >= cleaner.down_until) ++players_up;
+    });
+
     world.ForEach<GhostTools, Transform, GhostCleaner>([&](GhostTools& tools, Transform& pawn, GhostCleaner& cleaner) {
         for (i32 i = 0; i < tools.inbox_n; ++i) {
             const GhostTools::Request r = tools.inbox[i];
@@ -40,12 +47,14 @@ void TrapSystem::Update(World& world, f64 now, HauntingSystem& haunting) {
                         ghost->state != static_cast<i32>(GhostState::Contained) &&
                         !(config_.stun_needs_awake && ghost->state == static_cast<i32>(GhostState::Dormant)) && haunting.Stun(world, now)) {
                         tools.stun_ready = now + config_.stun_cooldown;
+                        tools.did_stun = true;
                         ++tools.stuns;
                         ok = true;
                     }
                 } else if (r.kind == GhostTools::kActivate) {
                     const Transform* tt = trap != kNullEntity ? world.GetComponent<Transform>(trap) : nullptr;
-                    if (ghost && tt && ghost->state == static_cast<i32>(GhostState::Stunned) &&
+                    const bool needs_partner = config_.require_second_player && players_up > 1 && tools.did_stun;
+                    if (ghost && tt && !needs_partner && ghost->state == static_cast<i32>(GhostState::Stunned) &&
                         Dist2(ghost_pos->position, tt->position) <= config_.capture_radius * config_.capture_radius) {
                         ghost->state = static_cast<i32>(GhostState::Contained);
                         ghost->state_since = now;
