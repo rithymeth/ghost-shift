@@ -1802,8 +1802,7 @@
       "components": {
         "ModelRenderer": {
           "$v": 1,
-          "asset_path": "Models/gs_van.gltf",
-          "model": "9ff59e5b-274f-5355-8155-138d72d9bb36"
+          "asset_path": "Models/gs_van_meshy.glb"
         },
         "Tags": {
           "$v": 1,
@@ -1821,14 +1820,14 @@
           ],
           "rotation": [
             0,
+            0.707107,
             0,
-            0,
-            1
+            0.707107
           ],
           "scale": [
-            1,
-            1,
-            1
+            1.25,
+            1.25,
+            1.25
           ]
         }
       },
@@ -1997,8 +1996,7 @@
       "components": {
         "ModelRenderer": {
           "$v": 1,
-          "asset_path": "Models/gs_pawn.gltf",
-          "model": "75c60256-3ea0-51a8-8212-f45f4c88eb6d"
+          "asset_path": "Models/gs_pawn_meshy.glb"
         },
         "Tags": {
           "$v": 1,
@@ -2021,9 +2019,9 @@
             1
           ],
           "scale": [
-            1,
-            1,
-            1
+            0.92,
+            0.92,
+            0.92
           ]
         }
       },
@@ -2033,8 +2031,7 @@
       "components": {
         "ModelRenderer": {
           "$v": 1,
-          "asset_path": "Models/gs_pawn.gltf",
-          "model": "75c60256-3ea0-51a8-8212-f45f4c88eb6d"
+          "asset_path": "Models/gs_pawn_meshy.glb"
         },
         "Tags": {
           "$v": 1,
@@ -2057,9 +2054,9 @@
             1
           ],
           "scale": [
-            1,
-            1,
-            1
+            0.92,
+            0.92,
+            0.92
           ]
         }
       },
@@ -2069,8 +2066,7 @@
       "components": {
         "ModelRenderer": {
           "$v": 1,
-          "asset_path": "Models/gs_pawn.gltf",
-          "model": "75c60256-3ea0-51a8-8212-f45f4c88eb6d"
+          "asset_path": "Models/gs_pawn_meshy.glb"
         },
         "Tags": {
           "$v": 1,
@@ -2093,9 +2089,9 @@
             1
           ],
           "scale": [
-            1,
-            1,
-            1
+            0.92,
+            0.92,
+            0.92
           ]
         }
       },
