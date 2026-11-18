@@ -19,11 +19,16 @@ struct GhostCleaner {
     static constexpr i32 kInbox = 8;
     i32 requests = 0, accepted = 0, rejected = 0;
     bool downed = false;      // incapacitated by a ghost: cannot clean until it recovers (replicated)
+    f32 tank = 0.0f;          // the vacuum's tank, in contamination units: fills as the player cleans (replicated)
+    bool tank_full = false;   // the next request would overflow it: empty it at the van (replicated)
+    i32 empties = 0;          // times the tank was emptied at the van (replicated)
+    bool empty_requested = false; // server side only
     f64 down_until = -1.0e9;  // server side only
     f64 protected_until = -1.0e9; // server side only: a recovered player cannot be re-attacked straight away
     i32 inbox[kInbox] = {};   // server side only: net ids asked for since the last Update
     i32 inbox_n = 0;
     f64 last_accept = -1.0e9; // server side only
+    void EmptyTank() { empty_requested = true; } // Fn_Server: needs the player to stand at the van
     void Clean(i32 net_id) {  // runs on the server (Fn_Server)
         ++requests;
         if (inbox_n < kInbox) inbox[inbox_n++] = net_id;
@@ -35,6 +40,8 @@ struct CleaningConfig {
     f32 range = 3.0f;            // metres from the pawn
     f64 min_interval = 0.1;      // seconds between accepted requests of one player
     f32 work_per_request = 1.0f / 15.0f; // 15 accepted requests (1.5 s at the cooldown) remove one contamination
+    f32 tank_capacity = 3.0f;    // contamination units the vacuum holds before it must be emptied (placeholder)
+    f32 van_range = 3.0f;        // metres from an entity tagged "Van" within which the tank can be emptied
 };
 
 class CleaningSystem {
@@ -65,5 +72,9 @@ AETHER_REFLECT(ghostshift::GhostCleaner, 1,
     AETHER_FIELD(accepted, Field_Replicated),
     AETHER_FIELD(rejected, Field_Replicated),
     AETHER_FIELD(downed, Field_Replicated),
-    AETHER_METHOD(Clean, Fn_Server, {"net_id"})
+    AETHER_FIELD(tank, Field_Replicated),
+    AETHER_FIELD(tank_full, Field_Replicated),
+    AETHER_FIELD(empties, Field_Replicated),
+    AETHER_METHOD(Clean, Fn_Server, {"net_id"}),
+    AETHER_METHOD(EmptyTank, Fn_Server)
 )

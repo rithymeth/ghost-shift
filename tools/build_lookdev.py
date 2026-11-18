@@ -153,6 +153,12 @@ def main(out):
                          (box(0.04, 1.12, 0.06, 0, 1.5, 0), trim), (box(2.0, 0.04, 0.06, 0, 1.5, 0), trim)])
     W("gs_table", [(box(1.4, 0.08, 0.8, 0, 0.76, 0), wood)] + [(box(0.08, 0.76, 0.08, sx * 0.62, 0.38, sz * 0.32), wood) for sx in (-1, 1) for sz in (-1, 1)])
     W("gs_lamp", [(cylinder(0.04, 1.6, 0, 0.8, 0), trim), (sphere(0.18, 0, 1.7, 0), mat("LampGlow", (1, 0.8, 0.5), 0.0, 0.3, (1.0, 0.62, 0.25), 8.0))])
+    # The cleaning van: where the vacuum's tank is emptied (blockout: a white box, a cyan stripe and a dark roof rack).
+    van_body = mat("VanBody", (0.85, 0.87, 0.9), 0.1, 0.45)
+    van_stripe = mat("VanStripe", (0.05, 0.4, 0.5), 0.0, 0.3, (0.1, 0.85, 1.0), 2.5)
+    W("gs_van", [(box(1.8, 1.5, 2.4, 0, 0.95, 0), van_body), (box(1.82, 0.12, 2.42, 0, 1.0, 0), van_stripe),
+                 (box(1.6, 0.1, 2.0, 0, 1.75, 0), trim), (box(0.3, 0.3, 0.3, -0.7, 0.2, 0.9), trim), (box(0.3, 0.3, 0.3, 0.7, 0.2, 0.9), trim),
+                 (box(0.3, 0.3, 0.3, -0.7, 0.2, -0.9), trim), (box(0.3, 0.3, 0.3, 0.7, 0.2, -0.9), trim)])
     W("gs_ectoplasm", [(cylinder(0.55, 0.03, 0, 0.015, 0), mat("Ecto", (0.1, 0.5, 0.2), 0.0, 0.15, (0.2, 1.0, 0.45), 2.5))])
     W("gs_stain", [(cylinder(0.45, 0.02, 0, 0.011, 0), mat("CursedStain", (0.25, 0.05, 0.4), 0.0, 0.3, (0.7, 0.2, 1.0), 2.0))])
     # Prankster: glowing cyan ghost with a hat (see concept sheet).

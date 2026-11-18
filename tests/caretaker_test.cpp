@@ -17,7 +17,7 @@ static int g_failed = 0;
 struct Room {
     World world;
     Entity pawn = kNullEntity, ghost = kNullEntity;
-    CleaningSystem cleaning;
+    CleaningSystem cleaning{[] { CleaningConfig c; c.tank_capacity = 1000.0f; return c; }()};
     CaretakerSystem caretaker;
     f64 now = 0;
     u32 next_id = 1;

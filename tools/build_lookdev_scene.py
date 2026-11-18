@@ -99,6 +99,12 @@ def main(project):
     model("ectoplasm_a", "gs_ectoplasm", (1.8, 0, -3.0), tags=("Lookdev", "Contamination", "Glow:ecto_a"))
     model("stain_a", "gs_stain", (-2.4, 0, -0.5), tags=("Lookdev", "Contamination", "Glow:stain_a"))
     model("stain_b", "gs_stain", (2.6, 0, 0.8), tags=("Lookdev", "Contamination", "Glow:stain_b"))
+    # More contamination (the starter house needs a contract worth playing) and the van that empties the vacuum's tank.
+    for name, kind, pos in [("ecto_b", "gs_ectoplasm", (-4.0, 0, -2.0)), ("stain_c", "gs_stain", (4.0, 0, -1.8)),
+                            ("ecto_c", "gs_ectoplasm", (-3.2, 0, 3.0)), ("stain_d", "gs_stain", (3.2, 0, 3.4)),
+                            ("stain_e", "gs_stain", (0.0, 0, -4.5)), ("ecto_d", "gs_ectoplasm", (-5.0, 0, 0.8))]:
+        model(name, kind, pos, tags=("Lookdev", "Contamination", "Glow:" + name))
+    model("van", "gs_van", (-3.5, 0, 4.7), tags=("Lookdev", "Van"))
     # Lights. Moon: a cool directional light shining in through the window (-Z side, pointing +Z and down).
     moon_rot = qmul(quat("y", 180), quat("x", -40))
     add("moon", {"Transform": tf((0, 5, -8), moon_rot), "Tags": {"$v": 1, "names": ["Lookdev", "Light"]},
@@ -110,6 +116,10 @@ def main(project):
     point("light_stain_a", (-2.4, 0.5, -0.5), (0.7, 0.2, 1.0), 6.0, 4.0, "stain_a")
     point("light_stain_b", (2.6, 0.5, 0.8), (0.7, 0.2, 1.0), 6.0, 4.0, "stain_b")
     point("light_ecto", (1.8, 0.6, -3.0), (0.2, 1.0, 0.45), 6.0, 4.0, "ecto_a")
+    for name, color, pos in [("ecto_b", (0.2, 1.0, 0.45), (-4.0, 0.6, -2.0)), ("stain_c", (0.7, 0.2, 1.0), (4.0, 0.5, -1.8)),
+                             ("ecto_c", (0.2, 1.0, 0.45), (-3.2, 0.6, 3.0)), ("stain_d", (0.7, 0.2, 1.0), (3.2, 0.5, 3.4)),
+                             ("stain_e", (0.7, 0.2, 1.0), (0.0, 0.5, -4.5)), ("ecto_d", (0.2, 1.0, 0.45), (-5.0, 0.6, 0.8))]:
+        point("light_" + name, pos, color, 6.0, 4.0, name)
 
     # Gameplay: the ghost patrols, and a director entity runs the contract.
     for e in ents:
@@ -171,7 +181,8 @@ def main(project):
             f.write("\n")
 
     play("Play_Clean", (1.8, 1.7, -0.3))
-    shot("Lookdev_A", (-3.2, 1.7, 4.8), (0.0, 1.2, -5.0))   # wide: the window wall, lamps, stains
+    shot("Lookdev_A", (1.5, 1.7, 5.5), (-0.5, 1.0, -4.0))   # wide: the window wall, lamps, stains
+    shot("Lookdev_C", (0.0, 1.6, 0.5), (-3.5, 1.0, 4.7), 60.0)  # the van, from inside the room
     shot("Lookdev_B", (1.8, 1.5, 0.6), (0.0, 0.9, -1.8), 55.0)  # close: the table with the vacuum, the ghost behind
     print("scene: %d entities (+ director)" % len(ents))
 

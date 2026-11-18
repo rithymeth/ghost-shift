@@ -34,14 +34,28 @@ void CleaningSystem::Update(World& world, f64 now) {
         }
     }
 
+    std::vector<Vec3> vans;
+    for (const Entity v : FindEntitiesWithTag(world, "Van")) if (const Transform* vt = world.GetComponent<Transform>(v)) vans.push_back(vt->position);
     std::vector<Entity> cleaned;
     world.ForEach<net::NetIdentity, GhostCleaner, Transform>([&](net::NetIdentity&, GhostCleaner& player, Transform& pawn) {
+        if (player.empty_requested) { // emptying the tank needs the van
+            player.empty_requested = false;
+            bool at_van = false;
+            for (const Vec3& v : vans) {
+                const f32 dx = v.x - pawn.position.x, dz = v.z - pawn.position.z;
+                at_van = at_van || dx * dx + dz * dz <= config_.van_range * config_.van_range;
+            }
+            if (at_van && !player.downed) { player.tank = 0.0f, player.tank_full = false; ++player.empties; }
+            else ++player.rejected;
+        }
         for (i32 i = 0; i < player.inbox_n; ++i) {
             const u32 id = static_cast<u32>(player.inbox[i]);
             const auto target = std::find_if(targets.begin(), targets.end(), [&](const Target& t) { return t.net_id == id; });
             const auto health = health_.find(id);
             player.downed = now < player.down_until; // an incapacitated player cannot clean; it recovers by itself
-            bool ok = !player.downed && target != targets.end() && health != health_.end() && now - player.last_accept >= config_.min_interval;
+            const bool room_in_tank = player.tank + config_.work_per_request <= config_.tank_capacity + 1.0e-3f;
+            if (!room_in_tank) player.tank_full = true;
+            bool ok = !player.downed && room_in_tank && target != targets.end() && health != health_.end() && now - player.last_accept >= config_.min_interval;
             if (ok) {
                 const f32 dx = target->position.x - pawn.position.x, dz = target->position.z - pawn.position.z;
                 ok = dx * dx + dz * dz <= config_.range * config_.range;
@@ -52,6 +66,8 @@ void CleaningSystem::Update(World& world, f64 now) {
             }
             ++player.accepted;
             ++accepted_total_;
+            player.tank += config_.work_per_request;
+            player.tank_full = player.tank + config_.work_per_request > config_.tank_capacity + 1.0e-3f;
             player.last_accept = now;
             health->second -= config_.work_per_request;
             if (health->second <= 1.0e-4f) {

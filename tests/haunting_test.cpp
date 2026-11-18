@@ -50,7 +50,9 @@ int main() {
     DedicatedServer server;
     std::string err;
     if (!server.Start(sc, world, &err)) { std::printf("server: %s\n", err.c_str()); return 2; }
-    CleaningSystem cleaning;
+    CleaningConfig roomy;
+    roomy.tank_capacity = 1000.0f;
+    CleaningSystem cleaning(roomy);
     HauntingSystem haunting;
     f64 now = 0;
     std::vector<std::unique_ptr<Player>> players;

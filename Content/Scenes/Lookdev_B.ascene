@@ -1450,6 +1450,264 @@
     },
     {
       "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_ectoplasm.gltf",
+          "model": "58c9bb1e-f2ef-5094-b67e-59a5c0a9f80b"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Glow:ecto_b"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4.0,
+            0,
+            -2.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "19e3918d-08d2-5c2a-8efd-5bf6a7db0959"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_stain.gltf",
+          "model": "4b4d052e-93b2-5a51-8932-aeaa00294918"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Glow:stain_c"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4.0,
+            0,
+            -1.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "bf744934-1fa4-581a-b67d-1df0e09b20e6"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_ectoplasm.gltf",
+          "model": "58c9bb1e-f2ef-5094-b67e-59a5c0a9f80b"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Glow:ecto_c"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -3.2,
+            0,
+            3.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "7678356d-9c82-5c74-b1c2-04eb34b9e4c1"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_stain.gltf",
+          "model": "4b4d052e-93b2-5a51-8932-aeaa00294918"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Glow:stain_d"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            3.2,
+            0,
+            3.4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "4d227b8e-38af-5bdc-8e17-2e6edf86e61c"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_stain.gltf",
+          "model": "4b4d052e-93b2-5a51-8932-aeaa00294918"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Glow:stain_e"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.0,
+            0,
+            -4.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "94b769b5-cd08-560f-ba74-bb555e9a6fb7"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_ectoplasm.gltf",
+          "model": "58c9bb1e-f2ef-5094-b67e-59a5c0a9f80b"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Contamination",
+            "Glow:ecto_d"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -5.0,
+            0,
+            0.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "7f906cce-b00b-5116-876b-44c73b09e1ed"
+    },
+    {
+      "components": {
+        "ModelRenderer": {
+          "$v": 1,
+          "asset_path": "Models/gs_van.gltf",
+          "model": "9ff59e5b-274f-5355-8155-138d72d9bb36"
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Van"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -3.5,
+            0,
+            4.7
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "f24d102c-0722-52cb-b9d4-eecadc6cc4ca"
+    },
+    {
+      "components": {
         "DirectionalLight": {
           "$v": 1,
           "cast_shadows": true,
@@ -1785,6 +2043,264 @@
         }
       },
       "guid": "ab0da5e3-0a00-54da-a5da-279f88e4a061"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            1.0,
+            0.45
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:ecto_b"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -4.0,
+            0.6,
+            -2.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "5fd2a686-96b4-50ff-b330-90ab181f19d3"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.7,
+            0.2,
+            1.0
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:stain_c"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            4.0,
+            0.5,
+            -1.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "6407b2d7-b2c5-57cf-a9cb-e61f12775aa9"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            1.0,
+            0.45
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:ecto_c"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -3.2,
+            0.6,
+            3.0
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "3c1f5469-9d93-5644-8312-d2cf4b10c20f"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.7,
+            0.2,
+            1.0
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:stain_d"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            3.2,
+            0.5,
+            3.4
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "0c2a4642-fdf2-556c-93d8-e7a1443e1b2f"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.7,
+            0.2,
+            1.0
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:stain_e"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            0.0,
+            0.5,
+            -4.5
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "349d1689-5b0b-5233-9432-b745b2337756"
+    },
+    {
+      "components": {
+        "PointLight": {
+          "$v": 1,
+          "cast_shadows": false,
+          "color": [
+            0.2,
+            1.0,
+            0.45
+          ],
+          "intensity": 6.0,
+          "range": 4.0
+        },
+        "Tags": {
+          "$v": 1,
+          "names": [
+            "Lookdev",
+            "Light",
+            "Glow:ecto_d"
+          ]
+        },
+        "Transform": {
+          "$v": 2,
+          "position": [
+            -5.0,
+            0.6,
+            0.8
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "guid": "70fa52d4-c5bc-5737-a454-2a287fcd8d5e"
     }
   ]
 }

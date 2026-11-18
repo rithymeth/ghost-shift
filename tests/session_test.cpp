@@ -40,6 +40,7 @@ int main() {
     RegisterServerComponents();
     World world;
     ghostshift::CleaningConfig cfg;
+    cfg.tank_capacity = 1000.0f;
     cfg.range = 5.0f; // the four pawns spawn 2 m apart (x = 0, 2, 4, 6); the targets sit in the middle
     std::vector<Entity> targets;
     for (const Vec3 p : {Vec3{3.0f, 0, -1.0f}, Vec3{2.0f, 0, 1.0f}, Vec3{4.0f, 0, 0.5f}, Vec3{3.0f, 0, 2.0f}}) targets.push_back(AddContamination(world, p));

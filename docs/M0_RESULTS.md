@@ -389,3 +389,37 @@ the server with `GHOSTSHIFT_HAUNTING_RISE=2` so that takes about 9 s instead of 
 so there is little to clean, and the grade's pace term (par 900 s) never bites. Pacing is a content problem (more
 contamination, locked rooms, more tasks) and a tuning problem (the haunting's rise, the grade thresholds), not something this
 rule fixes. Nothing here has been played by a person, so none of these numbers has been felt yet.
+
+# Tank, van and a bigger room — results
+
+**Why:** a contract with three stains is over in seconds. The design doc's "manage tank and battery" gives cleaning a rhythm.
+
+**Rule (server-authoritative, placeholder numbers):** each player's vacuum has a tank of 3 contamination units (`CleaningConfig::tank_capacity`).
+Every accepted scrub request adds 1/15 of a unit; a request that would overflow it is rejected and `tank_full` is set (replicated, so a
+HUD can show it). The tank is emptied with `EmptyTank`, only within 3 m of an entity tagged `Van`, and not while the player is downed.
+Tanks are per player. There is no battery yet.
+
+**Scene:** six more contamination spots (nine in all, spread across the 12 x 12 m room, each with its glow light) and a van blockout
+at the front left (`docs/images/lookdev_04_nine_stains.png`, `lookdev_05_van.png`; the van is a white box with a glowing stripe, a
+placeholder).
+
+`ghostshift_tank_test` (10 checks): the tank fills; it holds 3 units (45 requests) and then reports full; a full tank blocks cleaning;
+no van or a far van cannot empty it; at the van it empties and cleaning resumes; each player has a tank; a downed player cannot empty
+it. Four mutations (no capacity limit, empty from anywhere, downed players can empty, empty with no van) are each caught. The older
+tests give their pawns a roomy tank, because they test other rules. All nine test programs pass.
+
+**The assembled check, now with nine stains:** the scripted player walks to the nearest stain, scrubs it, and goes to the van when its
+tank fills. Retreat session: 9 cleaned, 2 van trips, 135 accepted requests, `RETREAT: grade D, payout 400`. Completion session: the
+ghost woke after 8.7 s, was stunned and contained, 9 cleaned, 2 trips, `COMPLETED: grade S, payout 1500`; the company held 1900 after a
+restart. Zero movement corrections.
+
+**Pacing, honestly:** the scripted player still finishes in about 35 s (it never hesitates, aims or looks around). That is far from the
+12 to 18 minutes the design doc gives Willow House. A person will be slower, but I do not know by how much and nobody has played this.
+More area, more contamination types with different tools, locked rooms and the haunting's pace are what could close that gap; the
+numbers here are placeholders.
+
+**The offline game was not updated:** the Luau offline player (`Contract.luau`) has no tank, van or trap. It counts the nine stains but
+the rules there are the old ones. Two implementations of the rules still exist; the C++ one is the one tested over the network.
+
+Not covered: the tank on any HUD, the battery, tool types (vacuum, UV scrubber, sprayer) with different contamination, and a person
+playing any of it.

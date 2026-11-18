@@ -59,7 +59,9 @@ int main() {
         if (!rigs[i].client->Start(cc, 0.0, &err)) { std::printf("client: %s\n", err.c_str()); return 2; }
     }
 
-    ghostshift::CleaningSystem cleaning;
+    ghostshift::CleaningConfig roomy;
+    roomy.tank_capacity = 1000.0f;
+    ghostshift::CleaningSystem cleaning(roomy);
     f64 now = 0;
     auto step = [&](int n) {
         for (int i = 0; i < n; ++i) {

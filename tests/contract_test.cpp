@@ -51,7 +51,9 @@ static Outcome RunScenario(bool clean_all, bool contain, const fs::path& dir) {
     if (!server.Start(sc, world, &err)) { std::printf("server: %s\n", err.c_str()); std::exit(2); }
     Company company(dir);
     company.Load();
-    CleaningSystem cleaning;
+    CleaningConfig roomy;
+    roomy.tank_capacity = 1000.0f;
+    CleaningSystem cleaning(roomy);
     HauntingSystem haunting;
     TrapSystem traps;
     ContractSystem contract;

@@ -64,7 +64,9 @@ int main(int argc, char** argv) {
     for (int i = 0; i < 30; ++i) frame();
 
     // The stains (from tools/build_lookdev_scene.py), found among the replicated scene entities by position.
-    const Vec3 spots[3] = {{-2.4f, 0, -0.5f}, {2.6f, 0, 0.8f}, {1.8f, 0, -3.0f}};
+    const std::vector<Vec3> spots = {{-2.4f, 0, -0.5f}, {2.6f, 0, 0.8f}, {1.8f, 0, -3.0f}, {-4.0f, 0, -2.0f}, {4.0f, 0, -1.8f},
+                                     {-3.2f, 0, 3.0f}, {3.2f, 0, 3.4f}, {0.0f, 0, -4.5f}, {-5.0f, 0, 0.8f}};
+    const Vec3 van = {-3.5f, 0, 4.7f}; // where the tank is emptied
     auto find = [&](const Vec3& p) -> Entity {
         for (const auto& [id, e] : client.Replication()->Entities()) {
             const Transform* t = w.IsAlive(e) ? w.GetComponent<Transform>(e) : nullptr;
@@ -78,54 +80,78 @@ int main(int argc, char** argv) {
         RemoteCallResult r;
         CallFunction(w, pawn(), type, *type.FindFunction(fn), comp, args, nullptr, &r);
     };
-    // From the spawn point only the two near stains are in reach (3 m); the ectoplasm is 3.5 m away. So: walk to the ectoplasm
-    // (about 1.5 m north-east), clean it, walk back, then clean the other two.
-    auto clean_spot = [&](const Vec3& spot, int& done) {
-        for (int i = 0; i < 90; ++i) { // up to ~12 s per stain (4 frames per request)
-            const Entity target = find(spot);
-            if (target == kNullEntity) { ++done; return; } // gone: the server removed it
-            GhostCleaner* gc = w.GetComponent<GhostCleaner>(pawn());
-            call(reflect::Reflect<GhostCleaner>(), "Clean", gc, {static_cast<i32>(w.GetComponent<net::NetIdentity>(target)->net_id)});
-            for (int k = 0; k < 4; ++k) frame();
-            if (debug && i % 30 == 0) {
-                const Transform* pt = w.GetComponent<Transform>(pawn());
-                std::fprintf(stderr, "  request %d: pawn (%.2f, %.2f) -> stain (%.2f, %.2f) | requests %d accepted %d rejected %d\n", i, pt->position.x,
-                             pt->position.z, spot.x, spot.z, gc->requests, gc->accepted, gc->rejected);
-            }
-        }
-    };
+    int trips = 0; // times the tank was emptied at the van
     // A real client sends an input every frame, including "no movement" (the movement rule decelerates only when it is stepped).
     auto stand = [&](int frames) { for (int i = 0; i < frames; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); } };
+    auto position = [&]() { return w.GetComponent<Transform>(pawn())->position; };
+    // Steer toward (x, z) until within `radius` (at most ~8 s), then stop.
+    auto walk_to = [&](const Vec3& to, f32 radius) {
+        for (int i = 0; i < 30 * 8; ++i) {
+            const Vec3 p = position();
+            const f32 dx = to.x - p.x, dz = to.z - p.z, d = std::sqrt(dx * dx + dz * dz);
+            if (d < radius) break;
+            client.Movement()->Predict(pawn(), dx / d, dz / d, false, 1.0f / 30.0f);
+            frame();
+        }
+        stand(12);
+    };
+    // Scrub one stain until it is gone. Returns false if the tank filled first (the caller goes to the van and comes back).
+    auto clean_spot = [&](const Vec3& spot) {
+        for (int i = 0; i < 90; ++i) { // up to ~12 s per stain (4 frames per request)
+            const Entity target = find(spot);
+            if (target == kNullEntity) return true; // gone: the server removed it
+            GhostCleaner* gc = w.GetComponent<GhostCleaner>(pawn());
+            if (gc->tank_full) return false;
+            call(reflect::Reflect<GhostCleaner>(), "Clean", gc, {static_cast<i32>(w.GetComponent<net::NetIdentity>(target)->net_id)});
+            for (int k = 0; k < 4; ++k) frame();
+        }
+        return find(spot) == kNullEntity;
+    };
+    auto empty_at_van = [&]() {
+        walk_to(van, 1.5f);
+        GhostCleaner* gc = w.GetComponent<GhostCleaner>(pawn());
+        call(reflect::Reflect<GhostCleaner>(), "EmptyTank", gc, {});
+        stand(12);
+        trips++;
+        say("emptied the tank");
+    };
+
     // --full: contain the ghost first. The Prankster starts about 4.2 m from the spawn point: place the trap beside it (within 3 m of
-    // us), stun it (within 5 m of us), activate (the stunned ghost is inside the trap's 3 m radius).
+    // us); a Dormant ghost cannot be stunned, so wait (standing by the trap) until the haunting wakes it and it comes to us; stun it
+    // (within 5 m of us); activate (the stunned ghost is inside the trap's 3 m radius).
     i32 ghost_state = -1;
     auto ghost_now = [&]() { i32 st = -1; w.ForEach<GhostBrain>([&](GhostBrain& g) { st = g.state; }); return st; };
     if (full) {
         GhostTools* gt = w.GetComponent<GhostTools>(pawn());
         const reflect::TypeInfo& tt = reflect::Reflect<GhostTools>();
         call(tt, "PlaceTrap", gt, {f32{-1.2f}, f32{-2.5f}});
-        // Bait: a Dormant ghost cannot be stunned. Wait (standing by the trap) until the haunting wakes it and it comes to us.
         const f64 waiting_since = seconds();
-        for (int i = 0; i < 30 * 60 && ghost_now() < 1 && seconds() - waiting_since < 60.0; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
+        for (int i = 0; i < 30 * 60 && ghost_now() < 1 && seconds() - waiting_since < 60.0; ++i) stand(1);
         std::fprintf(stderr, "[%.1fs] the ghost woke after %.1f s (state %d)\n", seconds(), seconds() - waiting_since, ghost_now());
-        for (int i = 0; i < 45; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); } // let it settle beside the trap
+        stand(45); // let it settle beside the trap
         call(tt, "StunGhost", gt, {});
-        for (int i = 0; i < 12; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
+        stand(12);
         say("ghost stunned?");
         call(tt, "ActivateTrap", gt, {});
-        for (int i = 0; i < 20; ++i) { client.Movement()->Predict(pawn(), 0.0f, 0.0f, false, 1.0f / 30.0f); frame(); }
+        stand(20);
         say("trap activated");
     }
+
+    // Clean all nine: always the nearest one next; empty the tank at the van whenever it fills.
+    std::vector<Vec3> pending = spots;
     int cleaned = 0;
-    for (int i = 0; i < 20; ++i) { client.Movement()->Predict(pawn(), 0.5f, -0.866f, false, 1.0f / 30.0f); frame(); }
-    stand(30);
-    say("at the ectoplasm");
-    clean_spot(spots[2], cleaned);
-    for (int i = 0; i < 20; ++i) { client.Movement()->Predict(pawn(), -0.5f, 0.866f, false, 1.0f / 30.0f); frame(); }
-    stand(30);
-    say("back at the middle");
-    clean_spot(spots[0], cleaned);
-    clean_spot(spots[1], cleaned);
+    for (int guard = 0; guard < 60 && !pending.empty(); ++guard) {
+        usize best = 0;
+        f32 best_d = 1.0e30f;
+        const Vec3 p = position();
+        for (usize i = 0; i < pending.size(); ++i) {
+            const f32 d = (pending[i].x - p.x) * (pending[i].x - p.x) + (pending[i].z - p.z) * (pending[i].z - p.z);
+            if (d < best_d) best_d = d, best = i;
+        }
+        walk_to(pending[best], 2.0f);
+        if (clean_spot(pending[best])) { ++cleaned; pending.erase(pending.begin() + static_cast<std::ptrdiff_t>(best)); }
+        else empty_at_van(); // the tank filled: go and empty it, then come back to the same stain
+    }
     for (int i = 0; i < 30; ++i) frame();
     say("cleaning done");
     GhostTools* tools = w.GetComponent<GhostTools>(pawn());
@@ -135,7 +161,7 @@ int main(int argc, char** argv) {
     w.ForEach<ContractResult>([&](ContractResult& r) { result = r; });
     const GhostCleaner* gc = w.GetComponent<GhostCleaner>(pawn());
     ghost_state = ghost_now();
-    std::printf("GHOSTSHIFT_PLAYTEST {\"ghost_state\":%d,\"cleaned\":%d,\"state\":%d,\"grade\":%d,\"payout\":%d,\"cleaned_percent\":%d,\"accepted\":%d,\"rejected\":%d}\n",
-                ghost_state, cleaned, result.state, result.grade, result.payout, result.cleaned_percent, gc ? gc->accepted : -1, gc ? gc->rejected : -1);
+    std::printf("GHOSTSHIFT_PLAYTEST {\"trips\":%d,\"ghost_state\":%d,\"cleaned\":%d,\"state\":%d,\"grade\":%d,\"payout\":%d,\"cleaned_percent\":%d,\"accepted\":%d,\"rejected\":%d}\n",
+                trips, ghost_state, cleaned, result.state, result.grade, result.payout, result.cleaned_percent, gc ? gc->accepted : -1, gc ? gc->rejected : -1);
     return result.state != 0 && result.payout > 0 ? 0 : 1;
 }
